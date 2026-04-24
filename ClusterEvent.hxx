@@ -1,0 +1,101 @@
+#pragma once
+#include <algorithm>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+#include "TFile.h"
+#include "TTree.h"
+
+class CryInfo {
+public:
+  explicit CryInfo(int N) : edeps_(N, 0.0), states_(N, -1) {};
+
+  auto GetEdepOf(int i) const -> const double { return edeps_.at(i); };
+
+  auto GetStateOf(int i) const -> const int { return states_.at(i); };
+
+  auto SetEdepOf(int modID, double edep) -> void {
+    edeps_[modID] = edep;
+    states_[modID] = 0;
+  }
+
+  auto SetStateOf(int modID, int state) -> void {
+    if (state == 0 or state == -1) {
+      std::cout << "[Warning]: Cannot set crystal state to " << state
+                << "by function SetStateOf()!\n";
+      return;
+    }
+    states_[modID] = state;
+  }
+
+  auto GetEdepSortedID() const -> std::vector<int> {
+    std::vector<int> idx(states_.size(), -1);
+    for (int n{0}; int &i : idx) {
+      if (states_.at(i) == 0)
+        i = n++;
+    }
+    std::sort(idx.begin(), idx.end(),
+              [this](int a, int b) { return edeps_.at(a) < edeps_.at(b); });
+    return idx;
+  };
+
+private:
+  std::vector<double> edeps_;
+  // level: unset=-1, unclustered=0, seed=1, seed_neighbor=2, etc.
+  std::vector<int> states_;
+};
+
+auto ClusterEvent(const std::vector<double> &edep_of_cry,
+                  double energy_threshold) -> void {
+  std::vector<int> wave;
+  std::vector<int> next_wave;
+
+  std::unique_ptr<TFile> file{TFile::Open("ecal_neighbor_info", "READ")};
+  auto tree{static_cast<TTree>(file->Get("ECALCrystalNeighbors"))};
+  std::vector<int> *nbor{nullptr};
+  tree->SetBranchAdress("neighbors", &nbor);
+
+  // edep_of_cry is not raw data, use it differntly in actual program
+  auto crystal_info{CryInfo(edep_of_cry.size())};
+  for (int modID{0}; int edep : edep_of_cry) {
+    crystal_info.SetEdepOf(modID++, edep);
+  }
+
+  const auto &sort_idx{crystal_info.GetEdepSortedID()};
+
+  int seed_edep_rank{0};
+  for (int seed_count{0}; true; ++seed_count) {
+    // exception for crystal with high edep but already clustered
+    while (crystal_info.GetStateOf(sort_idx.at(seed_edep_rank)) != 0) {
+      ++seed_edep_rank;
+    }
+    auto seed_id{sort_idx.at(seed_edep_rank)};
+    if (crystal_info.GetEdepOf(seed_id) < energy_threshold)
+      break;
+
+    wave.emplace_back(seed_id);
+    int crystal_state{0};
+    while (not wave.empty()) {
+      ++crystal_state;
+      for (auto id_wave : wave) {
+        // set current wave state
+        if (crystal_info.GetStateOf(id_wave) == 0 and
+            crystal_info.GetEdepOf(id_wave) >= energy_threshold) {
+          crystal_info.SetStateOf(id_wave, crystal_state);
+          tree->GetEntry(id_wave);
+          // get next wave
+          for (auto id_neighbor : *nbor) {
+            // if condition just for avoiding duplicate elements
+            if (std::find(next_wave.begin(), next_wave.end(), id_neighbor) !=
+                next_wave.end()) {
+              next_wave.emplace_back(id_neighbor);
+            }
+          }
+        }
+      }
+      wave.swap(next_wave);
+      next_wave.clear();
+    }
+  }
+}
