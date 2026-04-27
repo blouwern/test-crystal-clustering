@@ -20,12 +20,12 @@ int read_edep_of_each_evt(){
 
     int evtID{ 0 };
     while (evtID < nEvt){
-        // printf("Grabing edeps of crystals of event%d\n", evtID);
+        printf("Grabing edeps of crystals of event%d\n", evtID);
         modID = 0;
+        auto evt_df = df.Filter([&](int x){return x==evtID;},{"EvtID"});
         while (modID < nMod){
-            edep = *(df.Filter([&](int x){return x==evtID;},{"EvtID"})
-                       .Filter([&](short x){return x==modID;},{"ModID"})
-                       .Sum<float>("Edep"));
+            edep = *(evt_df.Filter([&](short x){return x==modID;},{"ModID"})
+                           .Sum<float>("Edep"));
             edeps.emplace_back(edep);
             ++modID;
         }
