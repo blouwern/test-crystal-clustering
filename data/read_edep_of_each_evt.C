@@ -8,7 +8,7 @@
 
 int read_edep_of_each_evt(){
     ROOT::EnableImplicitMT();
-    ROOT::RDataFrame df("G4Run0/ECALSimHit","SimMACEPhaseI_20260401.root");
+    ROOT::RDataFrame df("G4Run0/ECALSimHit","SimMACEPhaseI_20260403.root");
     auto nMod{ static_cast<short>(*df.Max("ModID")+1) };
     auto nEvt{static_cast<int>(*df.Max("EvtID")+1)};
 
