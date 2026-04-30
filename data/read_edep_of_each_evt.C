@@ -27,10 +27,11 @@ int read_edep_of_each_evt(){
         for (short mod{0}; mod < nMod; ++mod){
             auto it = evt_mod_edep_map.find({evt, mod});
             if (it == evt_mod_edep_map.end()){
-                printf("[Abnormal]: event%d, mod%d edep not found in map\n", evt, mod);
+                // printf("[Abnormal]: event%d, mod%d edep not found in map\n", evt, mod);
                 edeps[mod] = 0.0f;
                 continue;
             }
+            // printf("[ok]: event%d, mod%d edep found in map\n", evt, mod);
             edeps[mod] = it->second;
         }
         tree->Fill();
