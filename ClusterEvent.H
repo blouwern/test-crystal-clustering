@@ -36,7 +36,7 @@ class CryInfo {
             i = n++;
         }
         std::sort(idx.begin(), idx.end(),
-        [this](int a, int b) { return edeps_.at(a) < edeps_.at(b); });
+        [this](int a, int b) { return edeps_.at(a) > edeps_.at(b); });
         return idx;
     };
 
@@ -46,16 +46,18 @@ class CryInfo {
     std::vector<int> states_;
 };
 
-auto PrintVecI(const std::vector<int>& vec){
+template <typename T>
+auto PrintVec(const std::vector<T>& vec) -> void{
     std::cout << "{";
     for (auto i : vec){
-        std::cout << i << ",";
+        std::cout << i << " ";
     }
     std::cout << "}\n";
 }
 
 auto ClusterEvent(const std::vector<float> &edep_of_cry,
 float energy_threshold) -> void {
+    // PrintVec(edep_of_cry);
     std::vector<int> wave;
     std::vector<int> next_wave;
 
@@ -80,33 +82,37 @@ float energy_threshold) -> void {
         while (crystal_info.GetStateOf(sort_idx.at(seed_edep_rank)) != 0) {
             ++seed_edep_rank;
         }
-        std::cout << "seed_edep_rank of seed" << "[" <<seed_count << "]" << " is " << seed_edep_rank << "\n";
+        // std::cout << "seed_edep_rank of seed" << "[" <<seed_count << "]" << " is " << seed_edep_rank << "\n";
         auto seed_id{sort_idx.at(seed_edep_rank)};
-        std::cout << "seed_id of seed" << "[" << seed_count << "]" << " is " << seed_id << "\n";
+        // std::cout << "seed_id of seed" << "[" << seed_count << "]" << " is " << seed_id << "\n";
+        // std::cout << "edep of crystal seed_id" << "[" << seed_id << "]" << " is " << crystal_info.GetEdepOf(seed_id) << "\n";
         if (crystal_info.GetEdepOf(seed_id) < energy_threshold)
         break;
 
+        std::cout << "fuck" << "\n";
         wave.emplace_back(seed_id);
         int crystal_state{0};
         while (not wave.empty()) {
+            std::cout << "current wave: ";
+            PrintVec(wave);
             ++crystal_state;
-            for (auto id_wave : wave) {
+            for (auto id_current : wave) {
                 // set current wave state
-                if (crystal_info.GetStateOf(id_wave) == 0 and
-                crystal_info.GetEdepOf(id_wave) >= energy_threshold) {
-                    crystal_info.SetStateOf(id_wave, crystal_state);
-                    tree->GetEntry(id_wave);
+                if (crystal_info.GetStateOf(id_current) == 0
+                and crystal_info.GetEdepOf(id_current) >= energy_threshold) {
+                    crystal_info.SetStateOf(id_current, crystal_state);
+                    std::cout << "SetStateOf ID " << id_current << " to " << crystal_state << "\n";
+                    tree->GetEntry(id_current);
                     // get next wave
                     for (auto id_neighbor : *nbor) {
                         // if condition just for avoiding duplicate elements
-                        if (std::find(next_wave.begin(), next_wave.end(), id_neighbor) !=
-                        next_wave.end()) {
+                        if (std::find(next_wave.begin(), next_wave.end(), id_neighbor)
+                        == next_wave.end()) {
                             next_wave.emplace_back(id_neighbor);
                         }
                     }
                 }
             }
-            PrintVecI(wave);
             wave.swap(next_wave);
             next_wave.clear();
         }

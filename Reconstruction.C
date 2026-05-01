@@ -11,7 +11,17 @@ auto main(int argc, char *argv[]) -> int {
 }
 
 auto Reconstruction(std::string filename_edep_of_each_evt, float energy_threshold) -> int{
-    auto df{ROOT::RDataFrame("EdepOfEachEvt", filename_edep_of_each_evt)};
-    df.Foreach([&](std::vector<float> edeps){ClusterEvent(edeps, energy_threshold);}, {"Edeps"});
+    // auto df{ROOT::RDataFrame("EdepOfEachEvt", filename_edep_of_each_evt)};
+    // df.Foreach([&](std::vector<float> edeps){ClusterEvent(edeps, energy_threshold);}, {"Edeps"});
+    
+    std::unique_ptr<TFile> file{TFile::Open(filename_edep_of_each_evt.c_str(), "READ")};
+    auto tree{static_cast<TTree*>(file->Get("EdepOfEachEvt"))};
+    std::vector<float> *edeps{nullptr};
+    tree->SetBranchAddress("Edeps", &edeps);
+    for (int evtID{0}; evtID < tree->GetEntries(); ++evtID){
+        tree->GetEntry(evtID);
+        ClusterEvent(*edeps, energy_threshold);
+    }
+    
     return 0;
 }
