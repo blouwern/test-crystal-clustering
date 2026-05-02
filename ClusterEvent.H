@@ -57,7 +57,6 @@ auto PrintVec(const std::vector<T>& vec) -> void{
 
 auto ClusterEvent(const std::vector<float> &edep_of_cry,
 float energy_threshold) -> void {
-    // PrintVec(edep_of_cry);
     std::vector<int> wave;
     std::vector<int> next_wave;
 
@@ -74,7 +73,6 @@ float energy_threshold) -> void {
     }
 
     const auto &sort_idx{crystal_info.GetEdepSortedID()};
-    // std::cout << sort_idx[0] << "\n";
 
     int seed_edep_rank{0};
     for (int seed_count{0}; true; ++seed_count) {
@@ -82,11 +80,8 @@ float energy_threshold) -> void {
         while (crystal_info.GetStateOf(sort_idx.at(seed_edep_rank)) != 0) {
             ++seed_edep_rank;
         }
-        // std::cout << "seed_edep_rank of seed" << "[" <<seed_count << "]" << " is " << seed_edep_rank << "\n";
         auto seed_id{sort_idx.at(seed_edep_rank)};
-        // std::cout << "seed_id of seed" << "[" << seed_count << "]" << " is " << seed_id << "\n";
-        // std::cout << "edep of crystal seed_id" << "[" << seed_id << "]" << " is " << crystal_info.GetEdepOf(seed_id) << "\n";
-        if (crystal_info.GetEdepOf(seed_id) < energy_threshold)
+        if (crystal_info.GetEdepOf(seed_id) <= energy_threshold)
         break;
 
         std::cout << "fuck" << "\n";
@@ -99,7 +94,7 @@ float energy_threshold) -> void {
             for (auto id_current : wave) {
                 // set current wave state
                 if (crystal_info.GetStateOf(id_current) == 0
-                and crystal_info.GetEdepOf(id_current) >= energy_threshold) {
+                and crystal_info.GetEdepOf(id_current) > energy_threshold) {
                     crystal_info.SetStateOf(id_current, crystal_state);
                     std::cout << "SetStateOf ID " << id_current << " to " << crystal_state << "\n";
                     tree->GetEntry(id_current);

@@ -7,8 +7,12 @@
 #include "TFile.h"
 
 int read_edep_of_each_evt(){
+    const auto src_tree_name{"G4Run0/ECALSimHit"};
+    const auto src_file_name{"SimMACEPhaseI_20260401.root"};
+    const auto target_tree_name{"EdepOfEachEvt"};
+    const auto target_file_name{"edep_of_each_evt_20260401.root"};
     ROOT::EnableImplicitMT();
-    ROOT::RDataFrame df("G4Run0/ECALSimHit","SimMACEPhaseI_20260403.root");
+    ROOT::RDataFrame df(src_tree_name, src_file_name);
     auto nMod{ static_cast<short>(*df.Max("ModID")+1) };
     auto nEvt{static_cast<int>(*df.Max("EvtID")+1)};
 
@@ -17,8 +21,8 @@ int read_edep_of_each_evt(){
         evt_mod_edep_map[{evtID, modID}] += edep;
     }, {"EvtID","ModID","Edep"});
 
-    auto file{TFile::Open("edep_of_each_evt.root","RECREATE")};
-    auto tree = new TTree("EdepOfEachEvt", "Edep of each event");
+    auto file{TFile::Open(target_file_name,"RECREATE")};
+    auto tree = new TTree(target_tree_name, "Edep of each event");
     std::vector<float> edeps(nMod);
     tree->Branch("Edeps", &edeps);
 
@@ -35,7 +39,7 @@ int read_edep_of_each_evt(){
             edeps[mod] = it->second;
         }
         tree->Fill();
-        edeps.clear();
+        edeps.assign(nMod, .0f);
     }
 
     file->Write();
