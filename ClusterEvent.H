@@ -65,11 +65,19 @@ float energy_threshold) -> void {
     std::vector<int> *nbor{nullptr};
     tree->SetBranchAddress("neighbors", &nbor);
 
+    const auto nMod{tree->GetEntries()};
+    const auto nModHit{edep_of_cry.size()};
+
     // edep_of_cry is not raw data, use it differntly in actual program
-    auto crystal_info{CryInfo(edep_of_cry.size())};
-    std::cout << "size of vector edep_of_cry: " << edep_of_cry.size() << "\n";
-    for (int modID{0}; int edep : edep_of_cry) {
-        crystal_info.SetEdepOf(modID++, edep);
+    std::cout << "Numbers of crystal hit in this file run: " << nModHit << "\n";
+    std::cout << "Numbers of existent crystals: " << nMod << "\n";
+    auto crystal_info{CryInfo(nMod)};
+    for (int modID{0}; modID < nMod; ++modID){
+        if (modID < nModHit){
+            crystal_info.SetEdepOf(modID, edep_of_cry.at(modID));
+        } else{
+            crystal_info.SetEdepOf(modID, 0.0f);
+        }
     }
 
     const auto &sort_idx{crystal_info.GetEdepSortedID()};
@@ -84,7 +92,7 @@ float energy_threshold) -> void {
         if (crystal_info.GetEdepOf(seed_id) <= energy_threshold)
         break;
 
-        std::cout << "fuck" << "\n";
+        std::cout << "seed NO." << seed_count << "\n";
         wave.emplace_back(seed_id);
         int crystal_state{0};
         while (not wave.empty()) {

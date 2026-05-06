@@ -1,6 +1,8 @@
 #include "ClusterEvent.H"
 #include "ROOT/RDataFrame.hxx"
 #include <string>
+// #include <print>
+
 auto main(int argc, char *argv[]) -> int {
   const auto filename_edep_of_each_evt{argv[1]};
   const std::string E_th_str{argv[2]};
@@ -20,6 +22,8 @@ auto Reconstruction(std::string filename_edep_of_each_evt, float energy_threshol
     tree->SetBranchAddress("Edeps", &edeps);
     for (int evtID{0}; evtID < tree->GetEntries(); ++evtID){
         tree->GetEntry(evtID);
+        std::cout << "======= Event NO." << evtID << "=======\n";
+        // std::println("========== Event NO.{} ==========", evtID);
         ClusterEvent(*edeps, energy_threshold);
     }
     
