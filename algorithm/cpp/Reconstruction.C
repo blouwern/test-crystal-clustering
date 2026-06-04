@@ -4,24 +4,25 @@
 #include <print>
 
 // auto main(int argc, char *argv[]) -> int {
-//     const auto filename_edep_of_each_evt{argv[1]};
+//     const auto filepath_edep_of_each_evt{argv[1]};
 //     const std::string E_th_str{argv[2]};
 //     const auto energy_threshold{std::stof(E_th_str)};
-//     auto df{ROOT::RDataFrame("EdepOfEachEvt", filename_edep_of_each_evt)};
+//     auto df{ROOT::RDataFrame("EdepOfEachEvt", filepath_edep_of_each_evt)};
 //     df.Foreach([&](std::vector<float> edeps){ClusterEvent(edeps, energy_threshold);}, {"Edeps"});
 //     return 0;
 // }
 
 auto Reconstruction(std::string filename_edep_of_each_evt, float energy_threshold = 1.5) -> int{
+    auto filepath_edep_of_each_evt{"ECAL_CLUSTERING_DATA_DIR/processed/" + filename_edep_of_each_evt}l;
     ROOT::EnableImplicitMT(0);
     
-    std::unique_ptr<TFile> file_neighbors{TFile::Open("ecal_neighbor_info.root", "READ")};
+    std::unique_ptr<TFile> file_neighbors{TFile::Open("ECAL_CLUSTERING_DATA_DIR/utilities/ecal_neighbor_info.root", "READ")};
     auto tree_neighbors{static_cast<TTree*>(file_neighbors->Get("ECALCrystalNeighbors"))};
     std::vector<int> *nbor{nullptr};
     tree_neighbors->SetBranchAddress("neighbors", &nbor);
     const auto nMod{tree_neighbors->GetEntries()};
 
-    std::unique_ptr<TFile> file_cluster{TFile::Open("ecal_clusters.root", "RECREATE")};
+    std::unique_ptr<TFile> file_cluster{TFile::Open("ECAL_CLUSTERING_DATA_DIR/results/ecal_clusters.root", "RECREATE")};
     std::unique_ptr<TTree> tree_cluster{new TTree("ECALClusters","ECALClusters")};
     tree_cluster->SetDirectory(file_cluster.get());
     int evt_id_cluster{};
@@ -93,7 +94,7 @@ g        for (int modID{0}; modID < nMod; ++modID){
         }
     };
     
-    auto df{ROOT::RDataFrame("EdepOfEachEvt", filename_edep_of_each_evt)};
+    auto df{ROOT::RDataFrame("EdepOfEachEvt", filepath_edep_of_each_evt)};
     evt_id_cluster = 0;
     df.Foreach(
     [&](std::vector<float> edeps){
@@ -102,7 +103,7 @@ g        for (int modID{0}; modID < nMod; ++modID){
         ++evt_id_cluster;
     }, {"Edeps"});
     
-    // std::unique_ptr<TFile> file_edeps{TFile::Open(filename_edep_of_each_evt.c_str(), "READ")};
+    // std::unique_ptr<TFile> file_edeps{TFile::Open(filepath_edep_of_each_evt.c_str(), "READ")};
     // auto tree{static_cast<TTree*>(file_edeps->Get("EdepOfEachEvt"))};
     // std::vector<float> *edeps{nullptr};
     // tree->SetBranchAddress("Edeps", &edeps);
@@ -115,3 +116,16 @@ g        for (int modID{0}; modID < nMod; ++modID){
     file_cluster->Write();
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
