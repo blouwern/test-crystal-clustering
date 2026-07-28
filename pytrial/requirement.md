@@ -29,5 +29,9 @@
 - **Overall optimum: Eth=9–10, Nth=1** — balances all metrics. Nth=1 favored for Eth≤9; Nth=2 slightly better for Eth≥11 but difference is <0.5%.
 - Correlation peaks at Eth=6 (r=0.856) due to consistent over-prediction (+0.7 bias); MAE degrades at lower Eth due to noise seeding.
 
+## NO.7 <2026-07-28 18:51>
+- Add `.gitignore` for Python artifacts, ROOT outputs, plots, sweep results.
+- Create `pipeline.md` documenting both `reconstruction.py` (algorithm, API, CLI, output schema, data flow) and `scoring.py` (modes, API, examples); renamed from `scoring.md`.
+
 # Agent suggestion
 <!-- agent may give the suggestion of instructions to be given -->

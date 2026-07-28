@@ -1,6 +1,8 @@
 *.tex
 slides/*
 
+*/requirement.md
+
 # Python
 __pycache__/
 *.pyc
