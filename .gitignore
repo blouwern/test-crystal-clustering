@@ -1,2 +1,28 @@
 *.tex
 slides/*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+.venv/
+
+# Generated ROOT output (data/ source files are already tracked)
+*.root
+
+# Generated plots and images
+*.png
+*.pdf
+
+# Logs
+*.log
+
+# Sweep results and analysis (generated)
+pytrial/sweeps/results/
+pytrial/sweeps/analysis_output/
+
+# IDE
+.vscode/
+.idea/

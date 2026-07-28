@@ -1,7 +1,8 @@
 import ROOT
 import random
 
-file = ROOT.TFile.Open("data/raw/SimMACEPhaseI_20260401.root")
+ROOT.EnableImplicitMT()
+file = ROOT.TFile.Open("$ECAL_CLUSTERING_DATA_DIR/raw/SimMACEPhaseI_20260401.root")
 if not file or file.IsZombie():
     print("Error: Cannot open file!")
     exit(1)
@@ -24,20 +25,27 @@ for entry in vertex_tree:
         vertex_dict[evtid] = []
         vertex_dict[evtid].append(secpdgid)
 
+evt_modID_list = []
+
+
 def print_entry(entry):
-        print(f"[NO.{entry.ModID}:{entry.Edep}MeV]")
+    if evt_modID_list.count(entry.ModID) > 0:
+        print(f"[ABNORMAL]!!!--NO.{entry.ModID} existence greater than 1")
+    print(f"[NO.{entry.ModID}:{entry.Edep}MeV]")
+    evt_modID_list.append(entry.ModID)
 
-for times in range(10):
-    rand_evtid = random.randint(0, N_evt - 1)
-    print(f"---Selecting event NO.{rand_evtid}...")
 
-    secpdgids = vertex_dict.get(rand_evtid, [])
-    sec_str = ", ".join(str(pdg) for pdg in secpdgids)
+for evtID in range(0, 5):
+    secpdgid_evt = vertex_dict.get(evtID, [])
+
+    print(f"---Selecting event NO.{evtID}...")
+
+    sec_str = ", ".join(str(pdg) for pdg in secpdgid_evt)
     print(f"Secondary PDGID list: {sec_str}")
     for entry in hit_tree:
-        if int(entry.EvtID) == rand_evtid:
+        if int(entry.EvtID) == evtID:
             print_entry(entry)
-
-    print("\n---End of this event\n")
+    evt_modID_list = []
+    print("---End of this event\n")
 
 file.Close()
