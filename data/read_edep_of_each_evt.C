@@ -1,6 +1,5 @@
-#include <stdio.h>
+#include <cstdio>
 #include <vector>
-#include <utility>
 #include <map>
 #include "ROOT/RDataFrame.hxx"
 #include "TTree.h"
@@ -8,10 +7,9 @@
 
 int read_edep_of_each_evt(){
     const auto src_tree_name{"G4Run0/ECALSimHit"};
-    const auto src_file_name{"raw/SimMACEPhaseI_20260401.root"};
+    const auto src_file_name{"raw/ep_iso.root"};
     const auto target_tree_name{"EdepOfEachEvt"};
-    const auto target_file_name{"processed/edep_of_each_evt_20260401.root"};
-    ROOT::EnableImplicitMT();
+    const auto target_file_name{"processed/edep_of_each_evt_ep_iso.root"};
     ROOT::RDataFrame df(src_tree_name, src_file_name);
     auto nMod{ static_cast<short>(*df.Max("ModID")+1) };
     auto nEvt{static_cast<int>(*df.Max("EvtID")+1)};

@@ -9,7 +9,6 @@ def reconstruction(
     filename_edep_of_each_evt,
     energy_threshold,
     n_neighbor_threshold,
-    n_fallback_chance=1,
     data_dir="$ECAL_CLUSTERING_DATA_DIR",
     output_path=None,
 ):
@@ -23,24 +22,19 @@ def reconstruction(
     """
     # Step 1: Load neighbor info
     neighbor_file = ROOT.TFile.Open(
-        str(Path(data_dir) / "utilities" / "ecal_neighbor_info_added.root"), "READ"
+        str(Path(data_dir) / "utilities" / "ecal_neighbor_info.root"), "READ"
     )
     neighbor_tree = neighbor_file.Get("ECALCrystalNeighbors")
     nMod = neighbor_tree.GetEntries()
 
     neighbors = []
-    sec_neighbors = []
     # vector to receive branch data
     neighbor_vec = vector("int")()
     neighbor_tree.SetBranchAddress("neighbors", neighbor_vec)
-    sec_neighbor_vec = vector("int")()
-    neighbor_tree.SetBranchAddress("second_neighbors", sec_neighbor_vec)
     for i in range(nMod):
         neighbor_tree.GetEntry(i)
         neighbors.append([neighbor_vec[j] for j in range(neighbor_vec.size())])
-        sec_neighbors.append(
-            [sec_neighbor_vec[j] for j in range(sec_neighbor_vec.size())]
-        )
+
     neighbor_file.Close()
     print(f"Number of crystals: {nMod}")
 
@@ -114,7 +108,6 @@ def reconstruction(
             cluster_list = [seed_id]
             # level number: seed=1, neighbors=2, ...
             crystal_state = 1
-            fallback_count = 0
 
             while wave:
                 # print(wave)
@@ -129,10 +122,9 @@ def reconstruction(
                         for nb in neighbors[cur_id]:
                             if nb not in next_wave:
                                 next_wave.append(nb)
-                # special case catching (directly fall back to second neighbors)
-                if not next_wave and fallback_count < n_fallback_chance:
-                    next_wave = sec_neighbors[cur_id]
-                    fallback_count += 1
+                # else:
+                # print("fuck")
+
                 wave, next_wave = next_wave, []
 
             # save current cluster
