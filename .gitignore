@@ -11,6 +11,9 @@ __pycache__/
 # Logs
 *.log
 
+# Sweep working files (regenerable; the curated outputs live in pytrial/results/)
+pytrial/sweeps/subsets/
+
 # IDE
 .vscode/
 .idea/
