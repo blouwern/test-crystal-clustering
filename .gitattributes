@@ -1,0 +1,5 @@
+# Git LFS: only the large raw datasets and their per-event processing outputs.
+# Archived data (data/old/**), topology files (data/utilities/**) and all
+# result files are kept as regular git objects.
+data/raw/*.root filter=lfs diff=lfs merge=lfs -text
+data/processed/*.root filter=lfs diff=lfs merge=lfs -text

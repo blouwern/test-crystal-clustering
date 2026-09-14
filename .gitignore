@@ -1,7 +1,4 @@
-*.tex
-slides/*
-
-*/requirement.md
+data/old/**
 
 # Python
 __pycache__/
@@ -11,19 +8,8 @@ __pycache__/
 # Virtual environment
 .venv/
 
-# Generated ROOT output (data/ source files are already tracked)
-*.root
-
-# Generated plots and images
-*.png
-*.pdf
-
 # Logs
 *.log
-
-# Sweep results and analysis (generated)
-pytrial/sweeps/results/
-pytrial/sweeps/analysis_output/
 
 # IDE
 .vscode/
