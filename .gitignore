@@ -1,4 +1,5 @@
 data/old/**
+private_docs/
 
 # Python
 __pycache__/
