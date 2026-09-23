@@ -15,6 +15,11 @@ __pycache__/
 # Sweep working files (regenerable; the curated outputs live in pytrial/results/)
 pytrial/sweeps/subsets/
 
+# Superseded / erroneous files kept locally for reference only
+**/*_deprecated*
+**/*_deprecated/**
+_deprecated/
+
 # IDE
 .vscode/
 .idea/

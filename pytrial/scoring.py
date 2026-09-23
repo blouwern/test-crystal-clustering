@@ -4,9 +4,17 @@ import numpy as np
 from scipy import stats
 
 
-def _read_cluster_counts(input_path):
+def _read_cluster_counts(input_path, n_events=None):
+    """Clusters per event.
+
+    ``n_events`` is only needed for the degenerate case of an empty cluster tree
+    (no seed found in any event), where the event count cannot be recovered from
+    the tree itself.
+    """
     with ROOT.TFile(str(input_path), "READ") as f:
         tree = f.Get("ECALClusters")
+        if tree.GetEntries() == 0:
+            return np.zeros(n_events or 0, dtype=int)
         n_evt = int(tree.GetMaximum("EvtID") + 1)
         n_cluster_list = [0] * n_evt
         for entry in tree:

@@ -1,5 +1,6 @@
 import ROOT
 from ROOT import std, vector
+import os
 import sys
 from pathlib import Path
 import array
@@ -7,23 +8,39 @@ import array
 
 def reconstruction(
     filename_edep_of_each_evt,
-    energy_threshold,
+    energy_threshold_seed,
+    energy_threshold_wave,
     n_neighbor_threshold,
     n_fallback_chance=1,
-    data_dir="$ECAL_CLUSTERING_DATA_DIR",
+    neighbor_file_name="ecal_neighbor_info.root",
+    data_dir=None,
     output_path=None,
 ):
     """
     Args:
         filename_edep_of_each_evt (str): input file name under data_dir/processed/
-        energy_threshold (float): minimum energy for a seed / cluster membership
-        n_neighbor_threshold (int): minimum number of lit neighbors for propagation
+        energy_threshold_seed (float): minimum energy for a seed
+        energy_threshold_wave (float): minimum energy to join the wavefront
+        n_neighbor_threshold (int): minimum number of lit neighbors for a seed
         data_dir (str): data directory containing processed/, utilities/, results/
         output_path (str or None): output ROOT file path, defaults to auto-naming
     """
+    # The wavefront threshold is meant to be the looser one: a high seed
+    # threshold suppresses noise seeds while a low wave threshold lets the soft
+    # shower halo join the cluster.
+    if energy_threshold_seed <= energy_threshold_wave:
+        print(
+            f"[WARNING] energy_threshold_seed ({energy_threshold_seed}) should be "
+            f"greater than energy_threshold_wave ({energy_threshold_wave}); "
+            "the wavefront threshold is meant to be the looser one."
+        )
+
+    if data_dir is None:
+        data_dir = os.environ.get("ECAL_CLUSTERING_DATA_DIR", ".")
+
     # Step 1: Load neighbor info
     neighbor_file = ROOT.TFile.Open(
-        str(Path(data_dir) / "utilities" / "ecal_neighbor_info_added.root"), "READ"
+        str(Path(data_dir) / "utilities" / neighbor_file_name), "READ"
     )
     neighbor_tree = neighbor_file.Get("ECALCrystalNeighbors")
     nMod = neighbor_tree.GetEntries()
@@ -33,8 +50,16 @@ def reconstruction(
     # vector to receive branch data
     neighbor_vec = vector("int")()
     neighbor_tree.SetBranchAddress("neighbors", neighbor_vec)
+    # 'second_neighbors' is optional: without it the gap-jumping fallback is a
+    # no-op rather than a crash (SetBranchAddress on a missing branch throws)
+    has_second = any(b.GetName() == "second_neighbors"
+                     for b in neighbor_tree.GetListOfBranches())
     sec_neighbor_vec = vector("int")()
-    neighbor_tree.SetBranchAddress("second_neighbors", sec_neighbor_vec)
+    if has_second:
+        neighbor_tree.SetBranchAddress("second_neighbors", sec_neighbor_vec)
+    else:
+        print(f"[INFO] {neighbor_file_name} has no 'second_neighbors' branch; "
+              "gap-jumping fallback disabled")
     for i in range(nMod):
         neighbor_tree.GetEntry(i)
         neighbors.append([neighbor_vec[j] for j in range(neighbor_vec.size())])
@@ -50,8 +75,10 @@ def reconstruction(
     if output_path is None:
         output_path = Path(
             "ecal_clusters"
-            + "_Eth-"
-            + str(energy_threshold)
+            + "_Eth_s-"
+            + str(energy_threshold_seed)
+            + "_Eth_w-"
+            + str(energy_threshold_wave)
             + "_Nth-"
             + str(n_neighbor_threshold)
             + ".root"
@@ -82,23 +109,25 @@ def reconstruction(
         sorted_idx = sorted(range(nMod), key=lambda i: edeps_full[i], reverse=True)
 
         def is_lit_on(id):
-            return edeps_full[id] >= energy_threshold
+            return edeps_full[id] >= energy_threshold_wave
+
+        def is_seedable(cid):
+            if states[cid] != 0 or edeps_full[cid] < energy_threshold_seed:
+                return False
+            lit_nbors = sum(1 for nb in neighbors[cid] if is_lit_on(nb))
+            return lit_nbors >= n_neighbor_threshold
 
         def is_propagatable(cid):
-            # print(f"NO.{cid}", end=" ")
-            if states[cid] != 0 or not is_lit_on(cid):
-                return False
-            # print(f"n_neighbor = {len(neighbors[cid])}", end=" ")
-            lit_nbors = sum(1 for nb in neighbors[cid] if is_lit_on(nb))
-            # print(f"lit_nbors = {lit_nbors}")
-            return lit_nbors >= n_neighbor_threshold
+            # must still be unclustered, otherwise an already-assigned crystal
+            # keeps re-entering the wavefront and the loop never terminates
+            return states[cid] == 0 and is_lit_on(cid)
 
         seed_ptr = 0
 
         while True:
             # find next seed: state 0 and energy above threshold
             while seed_ptr < nMod and not (
-                states[sorted_idx[seed_ptr]] == 0 and is_lit_on(sorted_idx[seed_ptr])
+                states[sorted_idx[seed_ptr]] == 0 and is_seedable(sorted_idx[seed_ptr])
             ):
                 seed_ptr += 1
 
@@ -180,25 +209,33 @@ import scoring
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print(
-            "Usage: [filename] [Eth=10] [Nth=2] [output_name] "
-            "[expected_lambda] [--event-by-event] [--data-path path]"
+            "Usage: [filename] [Eth_seed=10] [Eth_wave=5] [Nth=3] [output_name] "
+            "[expected_lambda] [--event-by-event] [--data-path path] [--data-dir path]"
         )
         sys.exit(1)
 
     filename = sys.argv[1]
-    E_th = float(sys.argv[2]) if len(sys.argv) >= 3 else 10.0
-    N_th = float(sys.argv[3]) if len(sys.argv) >= 4 else 2.0
-    output_name = sys.argv[4] if len(sys.argv) >= 5 else None
-    exp_lambda = float(sys.argv[5]) if len(sys.argv) >= 6 else None
+    E_th_seed = float(sys.argv[2]) if len(sys.argv) >= 3 else 10.0
+    E_th_wave = float(sys.argv[3]) if len(sys.argv) >= 4 else 5.0
+    N_th = int(float(sys.argv[4])) if len(sys.argv) >= 5 else 3
+    output_name = sys.argv[5] if len(sys.argv) >= 6 else None
+    exp_lambda = float(sys.argv[6]) if len(sys.argv) >= 7 else None
+
+    def _option(flag):
+        if flag in sys.argv:
+            idx = sys.argv.index(flag)
+            if idx + 1 < len(sys.argv):
+                return sys.argv[idx + 1]
+        return None
 
     event_by_event = "--event-by-event" in sys.argv
-    data_path = None
-    if "--data-path" in sys.argv:
-        idx = sys.argv.index("--data-path")
-        if idx + 1 < len(sys.argv):
-            data_path = sys.argv[idx + 1]
+    data_path = _option("--data-path")
+    data_dir = _option("--data-dir")
 
-    output_path = reconstruction(filename, E_th, N_th, output_path=output_name)
+    output_path = reconstruction(
+        filename, E_th_seed, E_th_wave, N_th,
+        data_dir=data_dir, output_path=output_name,
+    )
     scoring.run(
         output_path,
         expected_lambda=exp_lambda,
