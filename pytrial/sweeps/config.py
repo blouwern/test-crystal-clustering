@@ -27,7 +27,7 @@ CLUSTER_DIR = WORK_DIR / f"clusters_{TAG}" if TAG else WORK_DIR / "clusters"
 TASK_DIR = WORK_DIR / f"tasks_{TAG}" if TAG else WORK_DIR / "tasks"
 
 # deliverables for this run
-RESULTS_DIR = SWEEP_DIR.parent / "results" / "sweep" / "26-09-16" / TAG
+RESULTS_DIR = SWEEP_DIR.parent / "results" / "sweep" / "26-09-23" / TAG
 SUMMARY_CSV = RESULTS_DIR / "sweep_summary.csv"
 
 DATASETS = ["ep_iso", "gamma_iso", "mu_rest"]
@@ -51,4 +51,4 @@ N_WORKERS = int(os.environ.get("ECAL_SWEEP_WORKERS", "18"))
 # topology consumed by reconstruction(); the shipped *_added.root file does not
 # match the MC geometry (see data/utilities/build_neighbor_info_from_geometry.py)
 NEIGHBOR_FILE = os.environ.get(
-    "ECAL_SWEEP_NEIGHBOR_FILE", "ecal_neighbor_info_geo.root")
+    "ECAL_SWEEP_NEIGHBOR_FILE", "ecal_neighbor_info.root")
