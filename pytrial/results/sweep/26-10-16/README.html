@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>README.html</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">README.html</h1>
+</header>
+<h1
+id="精细参数扫描2026-10-16能量阈值加密">精细参数扫描（2026-10-16，能量阈值加密）</h1>
+<p>本文件记录第二次两阈值重建扫描：相比 <a
+href="../26-09-23/README.md">26-09-23</a>，<strong>把波前能量阈值
+<code>Eth_wave</code> 在 0.1–2 MeV 区间加密</strong>，并把邻居数阈值
+<code>Nth</code> 由 4 组缩减为 3 组。目的正是让
+“能量阈值”这条物理轴显出结构，并把热图按 <code>Nth</code>
+分面板绘制，而不是把 <code>Nth</code> 平均掉。</p>
+<hr />
+<h2 id="扫描配置">1. 扫描配置</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">项</th>
+<th style="text-align: left;">值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">数据集</td>
+<td style="text-align: left;"><code>ep_iso</code> /
+<code>gamma_iso</code> / <code>mu_rest</code>，各 50 000 事例（1M 的前
+5%）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Eth_seed</code></td>
+<td style="text-align: left;">5, 7, 10, 12, 15, 20
+MeV（与上次相同，该轴灵敏度低）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Eth_wave</code></td>
+<td style="text-align: left;"><strong>0.1, 0.2, 0.3, 0.5, 0.75, 1.0,
+1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0</strong> MeV（16
+点，仅 <code>wave &lt; seed</code>）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Nth</code></td>
+<td style="text-align: left;"><strong>0, 1,
+2</strong>（去掉上次表现最差的 <code>Nth = 3</code>）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">点数</td>
+<td style="text-align: left;">85 × 3 × 3 = <strong>765</strong>，0
+失败，总耗时 2902 s（18 进程）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">拓扑</td>
+<td style="text-align: left;"><code>ecal_neighbor_info.root</code>（568
+晶体，4 近邻）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">事例数/数据集</td>
+<td style="text-align: left;">50 000</td>
+</tr>
+</tbody>
+</table>
+<p>与上一轮的对比：</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;">26-09-23</th>
+<th style="text-align: left;">本轮 26-10-16</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>Eth_wave</code> 网格</td>
+<td style="text-align: left;">0.5, 1, 2, 3, 5, 8, 12（7 点，最细间隔
+0.5）</td>
+<td style="text-align: left;">16 点，<strong>0.1–2 MeV 内间隔
+0.1–0.25</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Nth</code></td>
+<td style="text-align: left;">0, 1, 2, 3</td>
+<td style="text-align: left;">0, 1, 2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">点数</td>
+<td style="text-align: left;">420</td>
+<td style="text-align: left;">765</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">能量相关指标</td>
+<td style="text-align: left;">3 个</td>
+<td style="text-align: left;">9
+个（新增未簇化能量、被漏掉的”点亮”能量、中位收束率等）</td>
+</tr>
+</tbody>
+</table>
+<p>复现命令：</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> pytrial</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="va">ECAL_SWEEP_N_EVENTS</span><span class="op">=</span>50000 <span class="va">ECAL_SWEEP_NTHS</span><span class="op">=</span>0,1,2 <span class="dt">\</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">ECAL_SWEEP_NEIGHBOR_FILE</span><span class="op">=</span>ecal_neighbor_info.root <span class="dt">\</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> sweeps/run_sweep.py          <span class="co"># 765 点；写入 results/sweep/26-10-16/sweep_summary.csv</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> sweeps/analyze.py            <span class="co"># 热图（按 Nth 分面板）+ 剖面 + 表格</span></span></code></pre></div>
+<hr />
+<h2 id="数据可用性说明重要">2. 数据可用性说明（重要）</h2>
+<p>仓库中
+<code>data/processed/*.root</code>、<code>data/raw/*.root</code> 由
+<strong>Git LFS</strong> 跟踪，但本机原先未安装
+<code>git-lfs</code>，工作区内只有 133
+字节的指针文件，<strong>扫描所需的全部事例数据缺失</strong>。</p>
+<p>已按以下方式恢复（未修改任何原有数据）：把 <code>git-lfs</code> 3.5.1
+安装到本地 <code>.tools/</code>（已加入
+<code>.gitignore</code>），用公开仓库匿名 LFS 端点只取回
+<code>data/processed/**</code> 三个文件（约 232 MB；
+<code>data/raw/**</code> 未取回，因为重建只读
+<code>processed/</code>）：</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$PWD</span><span class="st">/.tools:</span><span class="va">$PATH</span><span class="st">&quot;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> lfs fetch <span class="at">--include</span><span class="op">=</span><span class="st">&quot;data/processed/**&quot;</span> origin</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> lfs checkout</span></code></pre></div>
+<p>恢复后校验：三个文件均为 <strong>ROOT Version 64004</strong>，大小
+77.4 / 71.9 / 70.1 MB， <code>EdepOfEachEvt</code> 各 <strong>1 000
+000</strong> 事例；拓扑 <code>ecal_neighbor_info.root</code> 含 568
+晶体、 <code>neighbors</code> 与 <code>second_neighbors</code>
+两个分支。<strong>无文件缺失，扫描得以完成。</strong></p>
+<hr />
+<h2 id="结果总览">3. 结果总览</h2>
+<h3 id="每个-nth-的最优点三数据集平均">3.1 每个 <code>Nth</code>
+的最优点（三数据集平均）</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><code>Nth</code></th>
+<th style="text-align: right;">最优 seed</th>
+<th style="text-align: right;">最优 wave</th>
+<th style="text-align: right;">exact-match</th>
+<th style="text-align: right;">能量捕获</th>
+<th style="text-align: right;">未簇化能量</th>
+<th style="text-align: right;">漏掉的点亮能量</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;"><strong>0</strong></td>
+<td style="text-align: right;"><strong>7</strong></td>
+<td style="text-align: right;"><strong>0.1</strong></td>
+<td style="text-align: right;"><strong>0.8677</strong></td>
+<td style="text-align: right;">0.9755</td>
+<td style="text-align: right;">0.0245</td>
+<td style="text-align: right;">0.0242</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8634</td>
+<td style="text-align: right;">0.9708</td>
+<td style="text-align: right;">0.0292</td>
+<td style="text-align: right;">0.0289</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8358</td>
+<td style="text-align: right;">0.9460</td>
+<td style="text-align: right;">0.0540</td>
+<td style="text-align: right;">0.0536</td>
+</tr>
+</tbody>
+</table>
+<h3 id="单数据集最优任意-nth">3.2 单数据集最优（任意
+<code>Nth</code>）</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">数据集</th>
+<th style="text-align: right;"><code>Nth</code></th>
+<th style="text-align: right;">seed</th>
+<th style="text-align: right;">wave</th>
+<th style="text-align: right;">exact-match</th>
+<th style="text-align: right;">能量捕获</th>
+<th style="text-align: right;">MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>ep_iso</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;"><strong>0.8790</strong></td>
+<td style="text-align: right;">0.9761</td>
+<td style="text-align: right;">0.1210</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>gamma_iso</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8743</td>
+<td style="text-align: right;">0.9816</td>
+<td style="text-align: right;">0.1257</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mu_rest</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8597</td>
+<td style="text-align: right;">0.9709</td>
+<td style="text-align: right;">0.1409</td>
+</tr>
+</tbody>
+</table>
+<p><code>ep_iso</code> 的 0.8790
+与上一轮最好点（<code>Nth=0, seed=12, wave=0.5</code>，0.8786）基本持平——
+<strong>接受度地板约 0.88 已到顶</strong>（见
+§4.4），进一步加密只能改善能量指标，不能显著提高簇数准确率。</p>
+<h3 id="展示图按-nth-分面板每格都是-eth_seed-eth_wave">3.3 展示图（按
+<code>Nth</code> 分面板；每格都是 <code>Eth_seed</code> ×
+<code>Eth_wave</code>）</h3>
+<p>图例：<strong>行 = 数据集（含三数据集平均），列 =
+<code>Nth</code></strong>，同一张图内共用色标，因此可以竖向比较
+数据集、横向比较邻居数阈值。</p>
+<figure>
+<img src="heatmap_exact_match_rate_per_nth.png"
+alt="exact-match rate" />
+<figcaption aria-hidden="true">exact-match rate</figcaption>
+</figure>
+<p><em><code>heatmap_exact_match_rate_per_nth.png</code> —
+准确匹配率（波前阈值 0.1–1.5 MeV 放大版）。</em></p>
+<figure>
+<img src="heatmap_energy_captured_fraction_per_nth.png"
+alt="energy capture" />
+<figcaption aria-hidden="true">energy capture</figcaption>
+</figure>
+<p><em><code>heatmap_energy_captured_fraction_per_nth.png</code> —
+能量捕获率（全部团簇能量 / 事例总能量）。</em></p>
+<figure>
+<img src="heatmap_lit_energy_missed_fraction_per_nth.png"
+alt="missed lit energy" />
+<figcaption aria-hidden="true">missed lit energy</figcaption>
+</figure>
+<p><em><code>heatmap_lit_energy_missed_fraction_per_nth.png</code> —
+高于 <code>Eth_wave</code> 却未进入任何团簇的能量占比。</em></p>
+<figure>
+<img src="heatmap_mean_clusters_per_nth.png" alt="mean clusters" />
+<figcaption aria-hidden="true">mean clusters</figcaption>
+</figure>
+<p><em><code>heatmap_mean_clusters_per_nth.png</code> —
+平均团簇数（真值为 1）。</em></p>
+<figure>
+<img src="heatmap_frac_0_per_nth.png" alt="frac 0" />
+<figcaption aria-hidden="true">frac 0</figcaption>
+</figure>
+<p><em><code>heatmap_frac_0_per_nth.png</code> — 0
+团簇事例比例（种子判据从未满足）。</em></p>
+<figure>
+<img src="heatmap_frac_3plus_per_nth.png" alt="frac 3plus" />
+<figcaption aria-hidden="true">frac 3plus</figcaption>
+</figure>
+<p><em><code>heatmap_frac_3plus_per_nth.png</code> — ≥3
+团簇事例比例（簇射被过度拆分）。</em></p>
+<p>每张指标另有 <code>*_per_nth_full.png</code>：<strong>完整 16 点
+<code>Eth_wave</code> 轴、不标注数字、用等值线表示</strong>，
+用于观察大尺度趋势（<code>exact_match_rate</code> 放大版另有逐
+<code>Nth</code> 单图
+<code>heatmap_exact_match_nth{0,1,2}.png</code>）。</p>
+<h3 id="剖面图阈值把物理转折点暴露出来">3.4
+剖面图：阈值把物理转折点暴露出来</h3>
+<figure>
+<img src="profile_exact_match.png" alt="exact match profile" />
+<figcaption aria-hidden="true">exact match profile</figcaption>
+</figure>
+<p><em><code>profile_exact_match.png</code> — 每个 <code>Nth</code>
+取各自最优 seed，exact-match 随 <code>Eth_wave</code> 的变化。</em></p>
+<figure>
+<img src="profile_missed_energy.png" alt="missed energy profile" />
+<figcaption aria-hidden="true">missed energy profile</figcaption>
+</figure>
+<p><em><code>profile_missed_energy.png</code> —
+同上，被漏掉的点亮能量占比。</em></p>
+<hr />
+<h2 id="结论">4. 结论</h2>
+<h3
+id="加密后-eth_wave-的物理意义非常清楚它是一个单调的过分裂丢能量权衡旋钮">4.1
+加密后 <code>Eth_wave</code>
+的物理意义非常清楚：它是一个<strong>单调的过分裂/丢能量权衡旋钮</strong></h3>
+<p>当 <code>Nth ≥ 1</code> 时，把 <code>Eth_wave</code> 从 0.1 抬到 3
+MeV 会同时：</p>
+<ul>
+<li>破坏簇数准确率（<code>Nth=1, seed=7</code>：<strong>0.863 →
+0.645</strong>；<code>Nth=2, seed=5</code>：<strong>0.836 →
+0.216</strong>）；</li>
+<li>降低能量捕获率（<code>Nth=2, seed=5</code>：<strong>0.946 →
+0.236</strong>）；</li>
+<li>抬高未簇化能量（同一行：<strong>0.054 → 0.764</strong>）。</li>
+</ul>
+<p>原因是清楚的：单粒子簇射的横向尺度只有 4–6 块晶体，总能量中位数约 53
+MeV，晶体间距 46 mm。 <code>Eth_wave</code> 一旦升到 1 MeV
+以上，就把簇射外圈的软沉积挡在波前之外，连通区被切断 → 同一簇射
+裂成多个团簇（<code>frac_3plus</code>
+上升）或直接漏掉（未簇化能量上升）。<strong>转折区恰好落在 0.3–2
+MeV</strong>，而旧网格（0.5, 1, 2, 3）只有 3
+个采样点，看不出这条曲线。</p>
+<h3 id="转折区在-0.10.5-mev-之间最优点是网格下界">4.2 转折区在 0.1–0.5
+MeV 之间，最优点是网格下界</h3>
+<p><code>Nth=2, seed=5</code>（数据集中均）：</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><code>Eth_wave</code> (MeV)</th>
+<th style="text-align: right;">0.1</th>
+<th style="text-align: right;">0.2</th>
+<th style="text-align: right;">0.3</th>
+<th style="text-align: right;">0.5</th>
+<th style="text-align: right;">0.75</th>
+<th style="text-align: right;">1.0</th>
+<th style="text-align: right;">1.5</th>
+<th style="text-align: right;">2.0</th>
+<th style="text-align: right;">3.0</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">exact-match</td>
+<td style="text-align: right;"><strong>0.836</strong></td>
+<td style="text-align: right;">0.830</td>
+<td style="text-align: right;">0.813</td>
+<td style="text-align: right;">0.762</td>
+<td style="text-align: right;">0.647</td>
+<td style="text-align: right;">0.561</td>
+<td style="text-align: right;">0.423</td>
+<td style="text-align: right;">0.330</td>
+<td style="text-align: right;">0.216</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">能量捕获</td>
+<td style="text-align: right;">0.946</td>
+<td style="text-align: right;">0.938</td>
+<td style="text-align: right;">0.919</td>
+<td style="text-align: right;">0.857</td>
+<td style="text-align: right;">0.725</td>
+<td style="text-align: right;">0.626</td>
+<td style="text-align: right;">0.467</td>
+<td style="text-align: right;">0.363</td>
+<td style="text-align: right;">0.236</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">未簇化能量</td>
+<td style="text-align: right;">0.054</td>
+<td style="text-align: right;">0.060</td>
+<td style="text-align: right;">0.076</td>
+<td style="text-align: right;">0.129</td>
+<td style="text-align: right;">0.250</td>
+<td style="text-align: right;">0.346</td>
+<td style="text-align: right;">0.503</td>
+<td style="text-align: right;">0.609</td>
+<td style="text-align: right;">0.740</td>
+</tr>
+</tbody>
+</table>
+<p><code>0.1 → 0.5</code> 已损失 <strong>7.4 个百分点</strong>的
+exact-match 与 <strong>8.9 个百分点</strong>的能量捕获；
+<code>0.1 → 0.2</code> 只损失 0.6 个百分点。<strong>最优波前阈值应取
+0.1–0.2 MeV，而不是上一轮推荐的 0.5
+MeV</strong>——这正是提高颗粒度带来的直接收益。所有 <code>Nth</code>
+的最优点都被推到网格下界 <code>0.1 MeV</code>，
+说明真正的平台可能更低（但低于约 0.1 MeV
+已接近数值噪声，收益有限）。</p>
+<h3 id="nth-仍是主导参数但缩小差距后结论更精确">4.3 <code>Nth</code>
+仍是主导参数，但缩小差距后结论更精确</h3>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><code>Nth</code></th>
+<th style="text-align: right;">最佳 mean exact-match</th>
+<th style="text-align: right;">相对 <code>Nth=0</code> 的损失</th>
+<th style="text-align: right;">该点能量捕获</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.8677</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0.9755</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.8634</td>
+<td style="text-align: right;">−0.43 pp</td>
+<td style="text-align: right;">0.9708</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.8358</td>
+<td style="text-align: right;">−3.19 pp</td>
+<td style="text-align: right;">0.9460</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3（上轮）</td>
+<td style="text-align: right;">0.5333</td>
+<td style="text-align: right;">−33 pp</td>
+<td style="text-align: right;">0.6097</td>
+</tr>
+</tbody>
+</table>
+<p>把邻居要求放到<strong>种子判据</strong>上，<code>Nth=3</code>
+是灾难性的，<code>Nth=2</code> 也有明显代价；只有 <code>Nth=0/1</code>
+在最优波前阈值下几乎等价（差 0.43 pp）。<strong>“是否要求至少 1
+个近邻”是抗噪与接受度之间的 唯一有意义的取舍</strong>，而它只在
+<code>Eth_wave</code> 足够低时才成立——这正是上一轮把 <code>Nth</code> 与
+<code>Eth_wave</code> 混在一起平均后看不出的一点。</p>
+<h3 id="接受度地板约-0.88">4.4 接受度地板约 0.88</h3>
+<p><code>Nth=0, seed=7</code> 时 0 团簇比例为
+<strong>0.1248</strong>，且从 0.1 到 12 MeV 完全不随
+<code>Eth_wave</code> 变化；
+<code>frac_3plus ≈ 0.0001–0.0002</code>。也就是说约 <strong>12.5%
+的事例总沉积能量低于种子阈值</strong>（几乎没有
+可见能量），任何阈值都不可能给出 1 个团簇。因此<strong>理论上限就是
+~0.875</strong>，本扫描已达到该上限： <code>ep_iso 0.8790</code>
+甚至略高于三数据集平均的地板，说明它的事例能量分布略偏高。</p>
+<h3 id="数据集差异">4.5 数据集差异</h3>
+<p><code>mu_rest</code> 的 exact-match 明显低于
+<code>ep_iso</code>/<code>gamma_iso</code>（0.860 vs 0.879/0.874），且
+<code>frac_0 ≈ 0.133</code> 高于另外两个（0.118 / 0.124）。μ
+子静止衰变产生的电子能谱较软，更多事例落在 地板以下。三者的
+<code>Eth_wave</code> 依赖形态一致，说明上述物理机制与粒子种类无关。</p>
+<hr />
+<h2 id="推荐工作点">5. 推荐工作点</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">目标</th>
+<th style="text-align: left;">建议</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">单粒子簇数最准、能量也最全</td>
+<td
+style="text-align: left;"><strong><code>Nth=0, Eth_seed=7, Eth_wave=0.1</code></strong>（mean
+exact 0.8677，能量捕获 0.9755）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">略抗噪（种子需 1 个近邻）</td>
+<td
+style="text-align: left;"><code>Nth=1, Eth_seed=7, Eth_wave=0.1</code>（mean
+0.8634，仅比 <code>Nth=0</code> 低 0.43 pp）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">若某数据集噪声更强</td>
+<td
+style="text-align: left;"><code>Nth=2, Eth_seed=5, Eth_wave=0.1</code>（mean
+0.8358，代价约 3 pp）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">需要高纯净度、可牺牲效率</td>
+<td style="text-align: left;">抬高 <code>Eth_wave</code>（如 2
+MeV）可压低 <code>frac_3plus</code>，但 exact-match 掉到 0.33
+以下，不建议</td>
+</tr>
+</tbody>
+</table>
+<p>对全部三个数据集，<strong>波前阈值都应压到 0.1–0.2
+MeV</strong>；种子阈值取 7–12 MeV 均可（该轴平坦）。</p>
+<hr />
+<h2 id="产物">6. 产物</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">文件</th>
+<th style="text-align: left;">内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>sweep_summary.csv</code></td>
+<td style="text-align: left;"><strong>765 行</strong>完整指标，32
+列</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>best_params.md</code> /
+<code>best_params.html</code></td>
+<td style="text-align: left;">各指标最优点、<code>Nth</code>
+对最优点的作用、Top-10 点</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>heatmap_&lt;metric&gt;_per_nth.png</code></td>
+<td style="text-align: left;">行=数据集、列=<code>Nth</code> 的
+<code>seed × wave</code> 热图（0.1–1.5 MeV 放大、带数字）</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>heatmap_&lt;metric&gt;_per_nth_full.png</code></td>
+<td style="text-align: left;">同上，完整 16 点 <code>Eth_wave</code>
+轴、等值线、无数值标注</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>heatmap_exact_match_nth{0,1,2}.png</code></td>
+<td style="text-align: left;">每个 <code>Nth</code>
+单独一张放大热图（含三数据集 + 平均）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>profile_exact_match.png</code> /
+<code>profile_energy_capture.png</code> /
+<code>profile_missed_energy.png</code></td>
+<td style="text-align: left;">指标随 <code>Eth_wave</code> 的剖面（按
+<code>Nth</code> 分色）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>tradeoff_scatter.png</code></td>
+<td style="text-align: left;">簇数质量 vs 能量捕获（点大小 ∝
+<code>Nth</code>，颜色 = seed）</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>best_exact_match_rate_bars.png</code></td>
+<td style="text-align: left;">每个数据集/<code>Nth</code>
+的最优点柱状对比</td>
+</tr>
+</tbody>
+</table>
+<p>关键指标列（CSV）：<code>exact_match_rate</code>、<code>energy_captured_fraction</code>、<code>energy_containment_mean/median</code>、
+<code>energy_split_fraction</code>、<code>energy_unclustered_fraction</code>、<code>lit_energy_missed_fraction</code>、
+<code>frac_events_containment_ge_90</code>、<code>frac_events_all_energy_one_cluster</code>、<code>frac_0/1/2/3plus</code>、
+<code>MAE</code>、<code>RMSE</code>、<code>bias</code>、<code>recon_seconds</code>。</p>
+<hr />
+<h2 id="未决事项">7. 未决事项</h2>
+<ol type="1">
+<li><strong>仍缺多粒子判据。</strong>
+以上全部是单粒子样本，<code>exact_match</code> 只衡量”团簇数 = 1”，
+无法验证<strong>分辨多粒子</strong>的能力。需把三个单粒子数据集按已知重数叠加后重跑，或提供
+多粒子事例样本（旧的 <code>child_stitched_edeps.root</code> 因
+<code>evt_stitch_child.py</code> 缺陷已废弃）。</li>
+<li><del><strong><code>Eth_wave &lt; 0.1 MeV</code>
+未扫描。</strong></del> <strong>已完成</strong>，见 <a
+href="../26-10-16-refined/README.md">26-10-16-refined</a>：0.02/0.05 MeV
+已补测， <strong>0.02–0.1 MeV 是平台</strong>（exact-match 差
+&lt;0.001，<code>Nth=2</code> 最多 0.0035）， 且 <code>frac_3plus</code>
+不变，无噪声过分裂。</li>
+<li><del><strong><code>Eth_seed</code> 轴仍可细化。</strong></del>
+<strong>已完成</strong>，见 <a
+href="../26-10-16-refined/README.md">26-10-16-refined</a>：5–10 MeV
+内补了 6/8/9 MeV， 确认 <strong>6–8 MeV 为平台（峰在 7）</strong>，并把
+<code>mu_rest</code> 最优点从 <code>seed=5</code>（0.8597）改进到
+<code>seed=6</code>（0.8614）。</li>
+</ol>
+</body>
+</html>

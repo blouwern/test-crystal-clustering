@@ -18,7 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from sweeps.config import (  # noqa: E402
     DATASETS, N_EVENTS, NTH_VALUES, N_WORKERS, NEIGHBOR_FILE,
-    RESULTS_DIR, SUMMARY_CSV, TASK_DIR, valid_pairs,
+    RESULTS_DIR, SUMMARY_CSV, TASK_DIR, TASK_TIMEOUT, valid_pairs,
 )
 
 TASK_SCRIPT = Path(__file__).resolve().parent / "run_task.py"
@@ -29,10 +29,13 @@ def run_one(task, force):
     tag = f"{dataset}_seed{seed:g}_wave{wave:g}_nth{nth:g}"
     if (TASK_DIR / f"{tag}.json").exists() and not force:
         return tag, "cached"
-    proc = subprocess.run(
-        [sys.executable, str(TASK_SCRIPT), dataset, str(seed), str(wave), str(nth)],
-        capture_output=True, text=True,
-    )
+    try:
+        proc = subprocess.run(
+            [sys.executable, str(TASK_SCRIPT), dataset, str(seed), str(wave), str(nth)],
+            capture_output=True, text=True, timeout=TASK_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired:
+        return tag, f"FAILED timeout after {TASK_TIMEOUT}s"
     if proc.returncode != 0:
         return tag, f"FAILED rc={proc.returncode}: {proc.stderr.strip()[-300:]}"
     return tag, "ok"
@@ -52,7 +55,13 @@ def write_csv(rows):
         print("no task results found")
         return
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    keys = list(rows[0].keys())
+    # union of keys so a partially re-run campaign still produces a full CSV
+    keys = []
+    for r in rows:
+        for k in r:
+            if k not in keys:
+                keys.append(k)
+    keys.sort()
     with open(SUMMARY_CSV, "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=keys)
         writer.writeheader()

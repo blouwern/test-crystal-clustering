@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>best_params.html</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">best_params.html</h1>
+</header>
+<h1 id="best-parameters---refined-two-threshold-sweep">Best parameters -
+refined two-threshold sweep</h1>
+<h2 id="best-point-per-metric-and-per-neighbour-threshold">Best point
+per metric and per neighbour threshold</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">metric</th>
+<th style="text-align: left;">goal</th>
+<th style="text-align: right;">Nth</th>
+<th style="text-align: left;">dataset</th>
+<th style="text-align: right;">seed</th>
+<th style="text-align: right;">wave</th>
+<th style="text-align: right;">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8790</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8744</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8614</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8678</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8774</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8720</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8520</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8641</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8656</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8559</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.7985</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>exact_match_rate</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8393</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9804</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9849</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9719</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9791</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9781</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9821</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9627</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9743</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9667</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9660</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9184</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_captured_fraction</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9504</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0196</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0151</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0281</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0209</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0219</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0179</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0373</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0257</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0333</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0340</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0816</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>energy_unclustered_fraction</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.0496</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9591</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9806</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9398</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9598</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9559</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9774</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9249</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9527</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9436</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9603</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8623</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>energy_containment_mean</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9221</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9404</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9662</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8940</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9335</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9376</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9636</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8826</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9279</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9270</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9479</td>
+</tr>
+<tr class="odd">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8299</td>
+</tr>
+<tr class="even">
+<td
+style="text-align: left;"><code>frac_events_containment_ge_90</code></td>
+<td style="text-align: left;">max</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9016</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8587</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8601</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.6080</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.7756</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.2400</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.2075</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.0776</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.1750</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.0045</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.0030</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.0004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>mean_clusters</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.0026</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1210</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1256</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1389</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1323</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1226</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1280</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1483</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1359</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1344</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1441</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.2015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>MAE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.1608</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3478</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3545</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3736</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3640</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3501</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3578</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3860</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3686</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">ep_iso</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3666</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">gamma_iso</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3797</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">mu_rest</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.4490</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>RMSE</code></td>
+<td style="text-align: left;">min</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;"><strong>mean</strong></td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.3995</td>
+</tr>
+</tbody>
+</table>
+<h2 id="effect-of-the-neighbour-threshold-on-the-optimum">Effect of the
+neighbour threshold on the optimum</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Nth</th>
+<th style="text-align: right;">best mean exact-match</th>
+<th style="text-align: right;">seed</th>
+<th style="text-align: right;">wave</th>
+<th style="text-align: right;">energy capture at that point</th>
+<th style="text-align: right;">unclustered energy (abs.)</th>
+<th style="text-align: right;">missed lit energy
+(threshold-relative)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.8678</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9764</td>
+<td style="text-align: right;">0.0236</td>
+<td style="text-align: right;">0.0236</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.8641</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9723</td>
+<td style="text-align: right;">0.0277</td>
+<td style="text-align: right;">0.0277</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.8393</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.9504</td>
+<td style="text-align: right;">0.0496</td>
+<td style="text-align: right;">0.0496</td>
+</tr>
+</tbody>
+</table>
+<h2 id="top-10-sweep-points-by-mean-exact-match-rate">Top-10 sweep
+points by mean exact-match rate</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rank</th>
+<th style="text-align: right;">Nth</th>
+<th style="text-align: right;">seed</th>
+<th style="text-align: right;">wave</th>
+<th style="text-align: right;">mean exact-match</th>
+<th style="text-align: right;">mean energy capture</th>
+<th style="text-align: right;">mean unclustered energy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8678</td>
+<td style="text-align: right;">0.9764</td>
+<td style="text-align: right;">0.0236</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.8677</td>
+<td style="text-align: right;">0.9761</td>
+<td style="text-align: right;">0.0239</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8677</td>
+<td style="text-align: right;">0.9755</td>
+<td style="text-align: right;">0.0245</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8674</td>
+<td style="text-align: right;">0.9748</td>
+<td style="text-align: right;">0.0252</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">0.8674</td>
+<td style="text-align: right;">0.9744</td>
+<td style="text-align: right;">0.0256</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.8673</td>
+<td style="text-align: right;">0.9738</td>
+<td style="text-align: right;">0.0262</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.8673</td>
+<td style="text-align: right;">0.9739</td>
+<td style="text-align: right;">0.0261</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.8670</td>
+<td style="text-align: right;">0.9723</td>
+<td style="text-align: right;">0.0277</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.02</td>
+<td style="text-align: right;">0.8670</td>
+<td style="text-align: right;">0.9778</td>
+<td style="text-align: right;">0.0222</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.8669</td>
+<td style="text-align: right;">0.9706</td>
+<td style="text-align: right;">0.0294</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

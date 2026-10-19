@@ -20,6 +20,12 @@ pytrial/sweeps/subsets/
 **/*_deprecated/**
 _deprecated/
 
+# Local scratch / helper tooling (not part of the project)
+.scratch/
+.tools/
+
 # IDE
 .vscode/
 .idea/
+# Matplotlib cache
+.mplconfig/
