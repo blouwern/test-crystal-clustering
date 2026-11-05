@@ -1,0 +1,69 @@
+{
+  "title": "Estimated gamma background in the MACE ECAL crystal array",
+  "geometry": {
+    "polyhedron": "GP(8,0) first-kind Goldberg polyhedron (dual of class-I geodesic sphere)",
+    "frequency": 8,
+    "inner_radius_mm": 260.0,
+    "outer_radius_mm": 540.0,
+    "crystal_length_mm": 280.0,
+    "n_faces": 642,
+    "n_pentagons": 12,
+    "n_hexagons": 630,
+    "n_vertices": 1280,
+    "n_edges": 1920,
+    "euler_characteristic": 2,
+    "total_surface_mm2": 847041.74403854,
+    "sphere_surface_mm2": 849486.6535306801,
+    "s1_mm2": 1319.3796636114332,
+    "s2_mm2": 5691.288608122691,
+    "s1_hexagon_mm2": 1331.7791677650027,
+    "s1_pentagon_mm2": 668.4056955490258,
+    "volume_formula": "exact frustum: L/3 * (S1 + S2 + sqrt(S1*S2))",
+    "volume_mm3": 910085.7119490934,
+    "volume_cm3": 910.0857119490934,
+    "volume_trapezoid_mm3": 981493.5580427774,
+    "mass_kg": 4.104486560890411,
+    "n_crystals": 568,
+    "volume_total_cm3": 516928.684387085,
+    "mass_total_kg": 2331.3483665857534,
+    "density_g_cm3": 4.51
+  },
+  "spectrum": {
+    "distribution": "normal truncated at E>0",
+    "nominal_mean_mev": 5.0,
+    "variance_mev2": 2.0,
+    "sigma_mev": 1.4142135623730951,
+    "mean_deposition_mev": 5.001089363774569
+  },
+  "dose": {
+    "p_bkg_usv_per_h": 30.0,
+    "sv_to_gy": 1.0,
+    "dose_rate_gy_per_h": 2.9999999999999997e-05,
+    "dose_rate_gy_per_s": 8.333333333333332e-09,
+    "power_per_crystal_w": 3.420405467408675e-08,
+    "power_total_w": 1.9427903054881276e-05,
+    "energy_per_hit_j": 8.012628523185541e-13
+  },
+  "rates": {
+    "r_bkg_per_s": 24246603.968553156,
+    "event_window_ns": 100.0,
+    "n_bkg_per_event": 2.424660396855316,
+    "poisson_probability": {
+      "0": 0.08850817159223116,
+      "1": 0.21460225845775763,
+      "2": 0.26016879857911684,
+      "3": 0.21027366080407073
+    },
+    "expected_hits_per_1e6_events": 2424660.396855316
+  },
+  "interpretation": {
+    "volume": "the rate uses the summed volume of all N_CRYSTALS = 568 instrumented crystals (the ideal GP(8,0) has 642 faces; the detector has two gaps, upstream and downstream, so 74 cells are absent), i.e. V_total = N_CRYSTALS * V_cry.",
+    "n_bkg": "n_bkg = r_bkg * 100 ns is the expected number of background hits per event over the whole detector; step 5 draws that number and assigns each hit to a random crystal."
+  },
+  "assumptions": {
+    "dose": "1 Sv = 1 Gy for photons; the ambient dose rate is applied as the absorbed dose rate in CsI (no CsI/air mass-energy-absorption correction)",
+    "spectrum": "normal distribution, mean 5 MeV, variance 2 MeV^2, truncated at 0",
+    "geometry": "crystal = frustum between the mean inner and outer face areas of GP(8,0), V = L/3 * (S1 + S2 + sqrt(S1*S2)); total volume = 568 * V",
+    "statistics": "background hits are Poisson distributed in a 100 ns window"
+  }
+}
