@@ -1,0 +1,2 @@
+n_events,n_truth,exact_rate,under_rate,over_rate,MAE,RMSE,bias,mean_clusters,std_clusters,min_clusters,max_clusters,frac_0,frac_1,frac_2,frac_3plus,frac_lt,frac_eq,frac_gt
+2000,2,0.8575,0.126,0.0165,0.143,0.3794733192202055,-0.11,1.89,0.36327122510803933,0,3,0.0005,0.1255,0.8575,0.0165,0.126,0.8575,0.0165

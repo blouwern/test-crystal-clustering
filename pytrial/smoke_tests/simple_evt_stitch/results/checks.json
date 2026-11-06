@@ -1,0 +1,26 @@
+{
+  "stage": "1",
+  "scheme": "A",
+  "stitched_info": {
+    "n_entries": 2000,
+    "ntrack_all_2": true,
+    "edeps_length_568": true,
+    "sourceidx_length_2": true
+  },
+  "energy_check": {
+    "max_abs_diff_mev": 1.52587890625e-05,
+    "tolerance_mev": 0.001,
+    "passed": true
+  },
+  "cluster_output_exists": true,
+  "n_events_read": 2000,
+  "all_events_accounted": true,
+  "metrics_finite": true,
+  "reconstruction": {
+    "Nth": 0,
+    "Eth_seed_mev": 7.0,
+    "Eth_wave_mev": 0.05,
+    "cluster_file": "pytrial/smoke_tests/simple_evt_stitch/results/clusters_ep_iso_n2_2k_nth0_seed7_wave0.05.root"
+  },
+  "passed": true
+}

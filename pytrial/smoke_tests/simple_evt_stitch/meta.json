@@ -1,0 +1,18 @@
+{
+  "stage": "1",
+  "scheme": "A",
+  "input": "data/processed/edep_of_each_evt_ep_iso.root",
+  "output": "pytrial/smoke_tests/simple_evt_stitch/data/stitched_ep_iso_n2_2k.root",
+  "pool_events_read": 20000,
+  "pool_events_positive": 17996,
+  "n_primary": 2,
+  "n_events": 2000,
+  "seed": 20261018,
+  "rng": "numpy.random.default_rng(PCG64)",
+  "energy_check": {
+    "max_abs_diff_mev": 1.52587890625e-05,
+    "tolerance_mev": 0.001,
+    "passed": true
+  },
+  "note": "count-only stitching; no per-primary truth (Stage 2)"
+}

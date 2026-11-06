@@ -1,0 +1,27 @@
+{
+  "n_events": 2000,
+  "n_truth": 2,
+  "exact_rate": 0.8575,
+  "under_rate": 0.126,
+  "over_rate": 0.0165,
+  "MAE": 0.143,
+  "RMSE": 0.3794733192202055,
+  "bias": -0.11,
+  "mean_clusters": 1.89,
+  "std_clusters": 0.36327122510803933,
+  "min_clusters": 0,
+  "max_clusters": 3,
+  "histogram": {
+    "0": 1,
+    "1": 251,
+    "2": 1715,
+    "3": 33
+  },
+  "frac_0": 0.0005,
+  "frac_1": 0.1255,
+  "frac_2": 0.8575,
+  "frac_3plus": 0.0165,
+  "frac_lt": 0.126,
+  "frac_eq": 0.8575,
+  "frac_gt": 0.0165
+}

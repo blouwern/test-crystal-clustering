@@ -143,7 +143,7 @@ def reconstruction(
             cluster_list = [seed_id]
             # level number: seed=1, neighbors=2, ...
             crystal_state = 1
-            fallback_count = 0
+            # fallback_count = 0
 
             while wave:
                 # print(wave)
@@ -159,9 +159,9 @@ def reconstruction(
                             if nb not in next_wave:
                                 next_wave.append(nb)
                 # special case catching (directly fall back to second neighbors)
-                if not next_wave and fallback_count < n_fallback_chance:
-                    next_wave = sec_neighbors[cur_id]
-                    fallback_count += 1
+                # if not next_wave and fallback_count < n_fallback_chance:
+                #     next_wave = sec_neighbors[cur_id]
+                #     fallback_count += 1
                 wave, next_wave = next_wave, []
 
             # save current cluster
