@@ -6,6 +6,7 @@ small self-contained data directory under ``sweeps/subsets`` that holds the
 event subsets plus symlinks to the topology file.
 """
 
+import array
 import sys
 from pathlib import Path
 
@@ -43,17 +44,28 @@ def make_subset(dataset, n_events):
 
     edeps = vector("float")()
     tree.SetBranchAddress("Edeps", edeps)
+    # background-injected samples carry NBkg; keep it so the sweep can bin by
+    # the number of injected background hits without re-reading the full file
+    has_nbkg = any(b.GetName() == "NBkg" for b in tree.GetListOfBranches())
+    nbkg = array.array("i", [0])
+    if has_nbkg:
+        tree.SetBranchAddress("NBkg", nbkg)
 
     fout = ROOT.TFile.Open(str(dst), "RECREATE")
     out_tree = ROOT.TTree("EdepOfEachEvt", f"{dataset} subset ({n} events)")
     out_edeps = vector("float")()
     out_tree.Branch("Edeps", out_edeps)
+    out_nbkg = array.array("i", [0])
+    if has_nbkg:
+        out_tree.Branch("NBkg", out_nbkg, "NBkg/I")
 
     for i in range(n):
         tree.GetEntry(i)
         out_edeps.clear()
         for value in edeps:
             out_edeps.push_back(float(value))
+        if has_nbkg:
+            out_nbkg[0] = int(nbkg[0])
         out_tree.Fill()
 
     out_tree.Write()

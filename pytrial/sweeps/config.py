@@ -33,6 +33,20 @@ Both axes are overridable so the same code reproduces every campaign:
     ECAL_SWEEP_WAVES=0.02,0.05,0.1,0.2,0.3,0.5,0.75,1.0,1.5,2.0,3.0,5.0,6.0,8.0,10.0,12.0
     ECAL_SWEEP_RESULTS_DATE=26-10-16-refined   # deliverable folder
     ECAL_SWEEP_TAG=refined                     # working-area suffix (cache)
+
+Background campaign (2026-11-06)
+--------------------------------
+The processed samples also exist with an injected gamma background
+(``*_bkg.root``; mean 2.4247 hits/event, each ~N(5 MeV, 2 MeV^2); see
+``pytrial/bkg_est_add/README.md``).  Those files add an ``NBkg`` branch and
+keep the same event order as the no-background files, so a background event
+can be decomposed crystal-by-crystal into signal and background energy.
+
+``DATASETS`` is therefore overridable as well, e.g.
+
+    ECAL_SWEEP_DATASETS=ep_iso,gamma_iso,mu_rest,ep_iso_bkg,gamma_iso_bkg,mu_rest_bkg
+
+and the helpers below map ``*_bkg`` to the matching signal-only sample.
 """
 
 import os
@@ -59,8 +73,20 @@ RESULTS_DATE = os.environ.get("ECAL_SWEEP_RESULTS_DATE", "26-10-16")
 RESULTS_DIR = SWEEP_DIR.parent / "results" / "sweep" / RESULTS_DATE
 SUMMARY_CSV = RESULTS_DIR / "sweep_summary.csv"
 
-DATASETS = ["ep_iso", "gamma_iso", "mu_rest"]
+DATASETS = [x.strip() for x in os.environ.get(
+    "ECAL_SWEEP_DATASETS", "ep_iso,gamma_iso,mu_rest").split(",") if x.strip()]
 EXPECTED_LAMBDA = 1.0
+BKG_SUFFIX = "_bkg"
+
+
+def has_bkg(dataset):
+    """True for the gamma-background-injected samples."""
+    return dataset.endswith(BKG_SUFFIX)
+
+
+def signal_dataset(dataset):
+    """Signal-only sample matching a (possibly background-injected) sample."""
+    return dataset[:-len(BKG_SUFFIX)] if has_bkg(dataset) else dataset
 
 
 def _float_list(env, default):
