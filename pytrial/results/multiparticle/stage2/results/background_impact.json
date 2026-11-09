@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "2gamma",
+    "seed": 13.0,
+    "wave": 0.05,
+    "nth": 0,
+    "exact_signal_bkg": 0.7098,
+    "exact_signal_sig": 0.71,
+    "delta_exact_signal": -0.00019999999999997797,
+    "fake_clusters_per_event": 0.00015,
+    "signal_purity_energy": 0.992018457118735,
+    "delta_merge_rate_events": 0.0001999999999999988,
+    "delta_split_rate_primaries": -0.00030000000000000165,
+    "delta_efficiency_mean": -1.1850221333098432e-06
+  },
+  {
+    "scenario": "ep2gamma",
+    "seed": 10.0,
+    "wave": 0.05,
+    "nth": 0,
+    "exact_signal_bkg": 0.53915,
+    "exact_signal_sig": 0.53965,
+    "delta_exact_signal": -0.0004999999999999449,
+    "fake_clusters_per_event": 0.0032,
+    "signal_purity_energy": 0.9916918393443054,
+    "delta_merge_rate_events": 0.0006000000000000172,
+    "delta_split_rate_primaries": -0.00020000000000000573,
+    "delta_efficiency_mean": -0.0001290361065627854
+  }
+]

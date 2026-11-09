@@ -1,0 +1,62 @@
+{
+  "stage": "2",
+  "date": "2026-11-09",
+  "seed": 20261106,
+  "pool_events": 100000,
+  "n_events": 20000,
+  "primary_energy_mev": 53.085,
+  "primary_energy_note": "SimPrimaryVertex.Ek0 is 53.085 MeV for every ep_iso/gamma_iso event. No deposited-energy selection is applied; the deposited signal energy E_sig = sum(Edeps) is the detector response and is used only in the metrics.",
+  "background": {
+    "model": "pytrial/bkg_est_add",
+    "n_bkg_per_event": 2.424660396855316,
+    "spectrum_mean_mev": 5.001089363774569,
+    "spectrum_sigma_mev": 1.4142135623730951,
+    "draw": "one Poisson draw per stitched event"
+  },
+  "scenarios": {
+    "2gamma": {
+      "sig_file": "pytrial/results/multiparticle/stage2/data/stitched_2gamma_sig.root",
+      "bkg_file": "pytrial/results/multiparticle/stage2/data/stitched_2gamma_bkg.root",
+      "n_events": 20000,
+      "ntrack": 2,
+      "max_abs_truth_minus_signal_mev": 7.569789886474609e-06,
+      "max_abs_edeps_sig_minus_signal_mev": 1.52587890625e-05,
+      "max_abs_edeps_bkg_minus_signal_plus_bkg_mev": 3.0517578125e-05,
+      "signal_energy_mean_mev": 90.84829711914062,
+      "signal_energy_min_mev": 0.0,
+      "signal_energy_max_mev": 106.1700668334961,
+      "bkg_energy_mean_mev": 12.107423782348633,
+      "nbkg_mean": 2.4223,
+      "frac_events_with_bkg": 0.91265,
+      "selection": "two different gamma_iso events; no deposited-energy selection",
+      "pool_size": 100000,
+      "source_energy_mean_by_primary_mev": [
+        45.53437554367173,
+        45.313920868702986
+      ]
+    },
+    "ep2gamma": {
+      "sig_file": "pytrial/results/multiparticle/stage2/data/stitched_ep2gamma_sig.root",
+      "bkg_file": "pytrial/results/multiparticle/stage2/data/stitched_ep2gamma_bkg.root",
+      "n_events": 20000,
+      "ntrack": 3,
+      "max_abs_truth_minus_signal_mev": 7.62939453125e-06,
+      "max_abs_edeps_sig_minus_signal_mev": 3.0517578125e-05,
+      "max_abs_edeps_bkg_minus_signal_plus_bkg_mev": 3.0517578125e-05,
+      "signal_energy_mean_mev": 137.2886199951172,
+      "signal_energy_min_mev": 0.0,
+      "signal_energy_max_mev": 160.1845703125,
+      "bkg_energy_mean_mev": 12.140406608581543,
+      "nbkg_mean": 2.4235,
+      "frac_events_with_bkg": 0.9075,
+      "selection": "one ep_iso positron + two different gamma_iso events; no deposited-energy selection",
+      "pool_size_ep": 100000,
+      "pool_size_gamma": 100000,
+      "source_energy_mean_by_primary_mev": [
+        46.59876866891643,
+        45.26909759144268,
+        45.420759157069234
+      ]
+    }
+  }
+}

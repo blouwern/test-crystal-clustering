@@ -1,0 +1,53 @@
+{
+  "row": {
+    "n_events": 20000,
+    "ntrack": 3,
+    "exact_total": 0.53705,
+    "under_total": 0.46155,
+    "over_total": 0.0014,
+    "mae_total": 0.536,
+    "mean_clusters_total": 2.4668,
+    "exact_signal": 0.53705,
+    "under_signal": 0.46155,
+    "over_signal": 0.0014,
+    "mae_signal": 0.536,
+    "mean_clusters_signal": 2.4668,
+    "fake_clusters_per_event": 0.0,
+    "frac_events_with_fake": 0.0,
+    "signal_purity_energy": 1.0,
+    "signal_purity_mean": 1.0,
+    "bkg_capture": NaN,
+    "signal_capture": 0.9793867384410037,
+    "lead_signal_containment": 0.46795258725870714,
+    "lead_bkg_fraction": 0.0,
+    "efficiency_mean": 0.8046170460453694,
+    "match_purity_mean": 0.9666206215267169,
+    "matched_primary_fraction": 0.8178833333333333,
+    "merge_rate_primaries": 0.10835,
+    "merge_rate_events": 0.15875,
+    "split_rate_primaries": 0.03473333333333333,
+    "energy_bias_mean": -0.020576926153097204,
+    "energy_rms": 0.04499776111513276,
+    "n_energy": 49257,
+    "scenario": "ep2gamma",
+    "version": "sig",
+    "seed": 14.0,
+    "wave": 0.02,
+    "nth": 0,
+    "tag": "ep2gamma_sig_seed14_wave0.02_nth0"
+  },
+  "hist_total": {
+    "0": 44,
+    "1": 1373,
+    "2": 7814,
+    "3": 10741,
+    "4": 28
+  },
+  "hist_signal": {
+    "0": 44,
+    "1": 1373,
+    "2": 7814,
+    "3": 10741,
+    "4": 28
+  }
+}

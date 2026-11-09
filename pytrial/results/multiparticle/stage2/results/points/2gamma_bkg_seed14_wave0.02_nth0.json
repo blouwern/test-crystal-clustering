@@ -1,0 +1,51 @@
+{
+  "row": {
+    "n_events": 20000,
+    "ntrack": 2,
+    "exact_total": 0.7086,
+    "under_total": 0.29015,
+    "over_total": 0.00125,
+    "mae_total": 0.30515,
+    "mean_clusters_total": 1.69735,
+    "exact_signal": 0.70865,
+    "under_signal": 0.29015,
+    "over_signal": 0.0012,
+    "mae_signal": 0.3051,
+    "mean_clusters_signal": 1.6973,
+    "fake_clusters_per_event": 5e-05,
+    "frac_events_with_fake": 5e-05,
+    "signal_purity_energy": 0.9919832155066561,
+    "signal_purity_mean": 0.9924852793690284,
+    "bkg_capture": 0.059470162066956316,
+    "signal_capture": 0.9807045813027075,
+    "lead_signal_containment": 0.6381129691585514,
+    "lead_bkg_fraction": 0.011405462456445083,
+    "efficiency_mean": 0.8318718888355632,
+    "match_purity_mean": 0.9831106019699213,
+    "matched_primary_fraction": 0.847925,
+    "merge_rate_primaries": 0.05515,
+    "merge_rate_events": 0.05515,
+    "split_rate_primaries": 0.03205,
+    "energy_bias_mean": -0.018990769847472756,
+    "energy_rms": 0.04143087636228127,
+    "n_energy": 33903,
+    "scenario": "2gamma",
+    "version": "bkg",
+    "seed": 14.0,
+    "wave": 0.02,
+    "nth": 0,
+    "tag": "2gamma_bkg_seed14_wave0.02_nth0"
+  },
+  "hist_total": {
+    "0": 275,
+    "1": 5528,
+    "2": 14172,
+    "3": 25
+  },
+  "hist_signal": {
+    "0": 275,
+    "1": 5528,
+    "2": 14173,
+    "3": 24
+  }
+}

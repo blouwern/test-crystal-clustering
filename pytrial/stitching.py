@@ -121,9 +121,166 @@ def write_stitched(path, edeps, ntrack, source_idx=None, tree_name=TREE_NAME):
     return path
 
 
-def stitch_with_truth(*args, **kwargs):
-    """Per-primary truth stitching (Scheme B, implemented in Stage 2)."""
-    raise NotImplementedError(
-        "Per-primary truth bookkeeping is the Stage 2 deliverable; "
-        "Stage 1 only provides stitch_count_only()."
-    )
+def event_energies(edeps):
+    """Total deposited energy per event (MeV)."""
+    return np.asarray(edeps, dtype=np.float64).sum(axis=1)
+
+
+def background_vectors(counts, mods, energies, n_mod=N_MOD):
+    """Split flat background draws into per-event vectors and sparse lists.
+
+    ``counts``/``mods``/``energies`` are the flat arrays returned by
+    ``bkg_est_add.add_background.draw_injections``.  Returns
+    ``(vectors, mods_list, energies_list)`` where ``vectors[i]`` is a float32
+    array of length ``n_mod`` and the lists hold the raw per-event hits.
+    """
+    counts = np.asarray(counts, dtype=np.int64)
+    mods = np.asarray(mods, dtype=np.int64)
+    energies = np.asarray(energies, dtype=np.float64)
+    vectors = np.zeros((len(counts), n_mod), dtype=np.float32)
+    mods_list, energies_list = [], []
+    start = 0
+    for i, k in enumerate(counts):
+        k = int(k)
+        stop = start + k
+        m = mods[start:stop].astype(np.int64)
+        e = energies[start:stop].astype(np.float32)
+        mods_list.append(m)
+        energies_list.append(e)
+        if k:
+            np.add.at(vectors[i], m, e)
+        start = stop
+    return vectors, mods_list, energies_list
+
+
+def write_multiparticle_sample(
+    path,
+    edeps,
+    ntrack,
+    species,
+    source_idx,
+    primary_energy,
+    source_energy,
+    signal_energy,
+    bkg_energy_total,
+    nbkg,
+    truth_crystal,
+    truth_primary,
+    truth_energy,
+    bkg_crystal,
+    bkg_energy,
+    separation=None,
+    sep_bin=None,
+    tree_name=TREE_NAME,
+):
+    """Write a multi-particle sample with per-primary and background truth.
+
+    ``edeps`` is the summed signal+background map used by the reconstruction.
+    The sparse ``Truth*`` branches hold the signal contribution of every
+    primary (``TruthPrimary`` is the primary index), and ``Bkg*`` holds the
+    background hits.  Set ``nbkg=0`` and empty background lists for a
+    signal-only control sample.
+
+    For separation studies, pass ``separation`` (mm) and ``sep_bin``; the
+    writer then adds ``Separation`` and ``SepBin`` branches.
+    """
+    if (separation is None) != (sep_bin is None):
+        raise ValueError("separation and sep_bin must be provided together")
+    has_sep = separation is not None
+
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    edeps = np.asarray(edeps, dtype=np.float32)
+    ntrack = np.asarray(ntrack, dtype=np.int32)
+    species = np.asarray(species, dtype=np.int32)
+    source_idx = np.asarray(source_idx, dtype=np.int32)
+    primary_energy = np.asarray(primary_energy, dtype=np.float32)
+    source_energy = np.asarray(source_energy, dtype=np.float32)
+    signal_energy = np.asarray(signal_energy, dtype=np.float32)
+    bkg_energy_total = np.asarray(bkg_energy_total, dtype=np.float32)
+    nbkg = np.asarray(nbkg, dtype=np.int32)
+    if has_sep:
+        separation = np.asarray(separation, dtype=np.float32)
+        sep_bin = np.asarray(sep_bin, dtype=np.int32)
+
+    f = ROOT.TFile.Open(str(path), "RECREATE")
+    tree = ROOT.TTree(tree_name, "stitched multi-particle events")
+    vec = vector("float")()
+    nt = array.array("i", [0])
+    spec = vector("int")()
+    src = vector("int")()
+    pe = vector("float")()
+    se = vector("float")()
+    sig_e = array.array("f", [0.0])
+    bkg_e = array.array("f", [0.0])
+    nb = array.array("i", [0])
+    tc = vector("int")()
+    tp = vector("int")()
+    te = vector("float")()
+    bc = vector("int")()
+    be = vector("float")()
+    sep_arr = array.array("f", [0.0]) if has_sep else None
+    bin_arr = array.array("i", [0]) if has_sep else None
+
+    tree.Branch("Edeps", vec)
+    tree.Branch("NTrack", nt, "NTrack/I")
+    tree.Branch("Species", spec)
+    tree.Branch("SourceIdx", src)
+    tree.Branch("PrimaryEnergy", pe)
+    tree.Branch("SourceEnergy", se)
+    tree.Branch("SignalEnergy", sig_e, "SignalEnergy/F")
+    tree.Branch("BkgEnergyTotal", bkg_e, "BkgEnergyTotal/F")
+    tree.Branch("NBkg", nb, "NBkg/I")
+    tree.Branch("TruthCrystal", tc)
+    tree.Branch("TruthPrimary", tp)
+    tree.Branch("TruthEnergy", te)
+    tree.Branch("BkgCrystal", bc)
+    tree.Branch("BkgEnergy", be)
+    if has_sep:
+        tree.Branch("Separation", sep_arr, "Separation/F")
+        tree.Branch("SepBin", bin_arr, "SepBin/I")
+
+    for i in range(len(edeps)):
+        vec.clear()
+        for value in edeps[i]:
+            vec.push_back(float(value))
+        nt[0] = int(ntrack[i])
+
+        for name, buf, row in (("species", spec, species[i]),
+                               ("source", src, source_idx[i])):
+            buf.clear()
+            for value in row:
+                buf.push_back(int(value))
+        for buf, row in ((pe, primary_energy[i]), (se, source_energy[i])):
+            buf.clear()
+            for value in row:
+                buf.push_back(float(value))
+
+        sig_e[0] = float(signal_energy[i])
+        bkg_e[0] = float(bkg_energy_total[i])
+        nb[0] = int(nbkg[i])
+        if has_sep:
+            sep_arr[0] = float(separation[i])
+            bin_arr[0] = int(sep_bin[i])
+
+        tc.clear()
+        for value in truth_crystal[i]:
+            tc.push_back(int(value))
+        tp.clear()
+        for value in truth_primary[i]:
+            tp.push_back(int(value))
+        te.clear()
+        for value in truth_energy[i]:
+            te.push_back(float(value))
+        bc.clear()
+        for value in bkg_crystal[i]:
+            bc.push_back(int(value))
+        be.clear()
+        for value in bkg_energy[i]:
+            be.push_back(float(value))
+        tree.Fill()
+
+    tree.Write()
+    f.Close()
+    return path
+

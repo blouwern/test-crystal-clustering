@@ -34,6 +34,19 @@ def read_cluster_counts(cluster_path, n_events):
     return counts
 
 
+def signal_cluster_counts(cluster_sig_list, n_events, threshold=1.0):
+    """Number of signal-like clusters per event.
+
+    A cluster is counted when its signal energy is at least ``threshold`` MeV;
+    background-only (fake) clusters are excluded.  ``cluster_sig_list[i]`` is
+    the array of per-cluster signal energies of event ``i``.
+    """
+    counts = np.zeros(int(n_events), dtype=np.int64)
+    for i, values in enumerate(cluster_sig_list):
+        counts[i] = int(np.sum(np.asarray(values, dtype=np.float64) >= threshold))
+    return counts
+
+
 def count_metrics(counts, n_truth):
     """Count-based metrics for a fixed true multiplicity ``n_truth``.
 

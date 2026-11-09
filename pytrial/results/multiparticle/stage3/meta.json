@@ -1,0 +1,63 @@
+{
+  "stage": "3",
+  "date": "2026-11-09",
+  "seed": 20261106,
+  "pool_events": 100000,
+  "positive_pool": 87747,
+  "n_events": 15000,
+  "n_per_bin": 2500,
+  "pitch_mm": 46.24094384427734,
+  "edges_pitch": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    Infinity
+  ],
+  "edges_mm": [
+    0.0,
+    23.12047192213867,
+    46.24094384427734,
+    92.48188768855468,
+    138.722831532832,
+    231.2047192213867,
+    Infinity
+  ],
+  "bin_counts": [
+    2500,
+    2500,
+    2500,
+    2500,
+    2500,
+    2500
+  ],
+  "bin_median_mm": [
+    14.515962600708008,
+    26.771839141845703,
+    46.746063232421875,
+    119.3764877319336,
+    189.83624267578125,
+    467.2574768066406
+  ],
+  "separation_min_mm": 0.599540650844574,
+  "separation_max_mm": 633.2587890625,
+  "signal_energy_mean_mev": 103.12574768066406,
+  "signal_energy_min_mev": 2.0439958572387695,
+  "signal_energy_max_mev": 106.17005920410156,
+  "source_energy_mean_by_primary_mev": [
+    51.57769012451172,
+    51.548057556152344
+  ],
+  "background": {
+    "n_bkg_per_event": 2.424660396855316,
+    "spectrum_mean_mev": 5.001089363774569,
+    "frac_events_with_bkg": 0.9104
+  },
+  "max_abs_truth_minus_signal_mev": 7.569789886474609e-06,
+  "max_abs_edeps_bkg_minus_signal_plus_bkg_mev": 3.0517578125e-05,
+  "note": "Two different gamma_iso events; no deposited-energy selection. Only zero-deposit events are excluded because their centroid is undefined.",
+  "sig_file": "pytrial/results/multiparticle/stage3/data/stage3_2gamma_sig.root",
+  "bkg_file": "pytrial/results/multiparticle/stage3/data/stage3_2gamma_bkg.root"
+}

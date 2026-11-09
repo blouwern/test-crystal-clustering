@@ -48,9 +48,12 @@ test-crystal-clustering/
     ├── stitching.py                      # 【新】多粒子拼接核心
     ├── evaluation/                       # 【新】多粒子评估（按关注点拆分）
     │   ├── __init__.py
-    │   ├── counts.py                     # 计数类指标（Stage 1 已实现）
-    │   ├── matching.py                   # 真值匹配 / 效率 / 纯度 / 合并 / 分裂（Stage 2/3）
-    │   └── energy.py                     # 能量类指标（Stage 2）
+    │   ├── counts.py                     # 计数类指标
+    │   ├── matching.py                   # 真值匹配 / 效率 / 纯度 / 合并 / 分裂
+    │   ├── background.py                 # 信号纯度 / 假团簇 / 本底捕获
+    │   ├── energy.py                     # 能量捕获 / 收束 / 逐初级响应
+    │   ├── separation.py                 # 分离度分箱 / 合并半径拟合
+    │   └── io.py                         # 拼接样本与团簇文件读取
     ├── sweeps/                           # 现有参数扫描（与上面同级）
     ├── smoke_tests/
     │   ├── check_evt_info/               # 现有
@@ -62,13 +65,29 @@ test-crystal-clustering/
     │       ├── meta.json                 # 生成配置
     │       ├── data/                     # 测试数据（拼接后的 ROOT）
     │       └── results/                  # 指标、团簇输出、图
-    └── results/                          # 现有扫描结果
+    └── results/                          # 现有扫描与阶段结果
+        ├── sweep/                        # 单粒子参数扫描
+        └── multiparticle/
+            ├── stage2/                   # Stage 2 驱动、样本、结果、报告
+            │   ├── generate.py
+            │   ├── evaluate.py
+            │   ├── run_stage2.sh
+            │   ├── README.md
+            │   ├── data/
+            │   └── results/
+            └── stage3/                   # 【新】Stage 3 分离度曲线
+                ├── generate.py
+                ├── evaluate.py
+                ├── run_stage3.sh
+                ├── README.md
+                ├── data/
+                └── results/
 ```
 
 **分层原则**：
 
 * `geometry.py`、`stitching.py`、`evaluation/`、`sweeps/` 平级，互不嵌套；
-* `evaluation/` 按“计数 / 匹配 / 能量”拆文件，避免单文件膨胀；
+* `evaluation/` 按“计数 / 匹配 / 本底 / 能量 / 分离度 / IO”拆文件，避免单文件膨胀；
 * 冒烟测试只属于 `smoke_tests/`，不污染核心模块；
 * 每个阶段的数据、配置、结果放在对应阶段自己的目录下。
 
@@ -78,9 +97,9 @@ test-crystal-clustering/
 
 | 阶段 | 方案 | 内容 | 数据 | 主要指标 | 状态 |
 |:--|:--|:--|:--|:--|:--|
-| **Stage 1** | **A** | 最简计数拼接冒烟测试：N=2，2k 事例 | `ep_iso`，pool 20k（正能量） | 计数类 + I/O/能量守恒 | **本次完成** |
-| **Stage 2** | **B** | 逐初级能量矩阵；N=2/3/4；同种 + 混合；各 20k | `ep_iso`/`gamma_iso`/`mu_rest` | 计数 + 效率/纯度/合并/分裂 + 能量 | 待开始 |
-| **Stage 3** | **C** | 分离度分箱；N=2；6 个距离箱，每箱 ≥2k | 同上 + 晶体位置 | 合并率 vs 距离 | 待开始 |
+| **Stage 1** | **A** | 最简计数拼接冒烟测试：N=2，2k 事例 | `ep_iso`，pool 20k（正能量） | 计数类 + I/O/能量守恒 | **已完成** |
+| **Stage 2** | **B** | 逐初级真值 + γ 本底；2γ（两个不同 gamma）与 e+ + 2γ（一个 e+ + 两个 gamma）；**无沉积能量筛选**；各 20k | `ep_iso`/`gamma_iso` + 本底模型 | all-event + 条件 exact + 匹配 + 本底 + 能量 | **已完成（修正版）** |
+| **Stage 3** | **C** | 分离度分箱；N=2；6 个距离箱，每箱 2.5k | 同上 + 晶体位置 | 合并率 vs 距离 | **已完成** |
 | **Stage 4** | **D** | 晶体集不相交对照；N=2 | 同上 | 无重叠上限 | 待开始 |
 | **Stage 5** | **E** | Poisson(2–3) + 混合种类，真实感基准 | 同上 | 综合性能 | 待开始 |
 | **Stage 6** | **F** | 固定总能量/能量归一，系统检查 | — | 阈值移动检查 | **暂缓，不执行** |
@@ -149,66 +168,78 @@ for 每个拼接事例 (2k):
 
 ---
 
-## 5. Stage 2：方案 B — 逐初级能量矩阵
+## 5. Stage 2：方案 B — 逐初级真值 + γ 本底（本次完成）
 
-### 5.1 目的
+### 5.1 目标
 
-在 Stage 1 的基础上加入**逐初级真值**，使评估从“只看总数”升级为“能测每个簇射是否被单独找回”。
+在 Stage 1 的计数拼接上加入**逐初级真值**和**γ 本底**，测试当前算法在两种多粒子信号上的表现：
 
-### 5.2 设置
+1. **2γ**：两个**不同**的 `gamma_iso` 事例，N=2；
+2. **e+2γ**：一个 `ep_iso` + 两个**不同**的 `gamma_iso` 事例，N=3。
 
-| 项 | 值 |
-|:--|:--|
-| 重数 | N = 2, 3, 4 |
-| 种类 | 同种（ep、gamma、mu 各一组）+ 混合（每初级随机种类） |
-| 事例数 | 每组 20 000 |
-| 源 pool | 每样本前 200 000 事例（正能量；同种/混合按需抽样） |
-| 空间选择 | 随机（不控制重叠），保留自然分离度分布 |
-| 输出 | `stitched_N{n}_{species}.root`，每文件含 `Edeps`、`NTrack`、逐初级稀疏真值 |
+两个场景都**不做任何沉积能量筛选**：主粒子能量固定为 53.085 MeV，`E_sig = Σ Edeps` 只作为探测器响应/评估量。all-event exact 包含零沉积/严重泄漏事例；另给“所有源 `E_sig>0`”的条件 exact 作为诊断。同时为每个场景生成 **signal-only 控制样本**（同一批信号、不加本底），用于配对比较本底影响。
 
-### 5.3 真值格式（建议）
+> **修正记录（2026-11-09）**：上一版曾要求 2γ 每个 `E_sig>45`、e+2γ 总 `E_sig∈[100,125]`；这把探测器泄漏当成事例选择条件，样本有偏（e+2γ 正电子平均被压到 26.4 MeV），已废弃。本版数字与结论以无筛选样本为准。
+
+### 5.2 关键约定
+
+* 现有 `ep_iso` / `gamma_iso` 的主粒子能量由 `SimPrimaryVertex.Ek0` 确认为 **单能 53.085 MeV**；`E_sig = Σ Edeps` 是该单粒子的沉积信号能量，**不是事例选择条件**。
+* 正电子来自 `ep_iso`（PDGID = -11），gamma 来自 `gamma_iso`（PDGID = 22）。
+* 2γ 取两个不同 `gamma_iso` 事例；e+2γ 取一个 `ep_iso` + 两个不同 `gamma_iso` 事例。**不做任何 `E_sig` 筛选**；零沉积事例保留在 all-event 结果中。
+* 条件 exact 只统计所有源 `E_sig>0` 的子集，用于区分“探测器零沉积”与“聚类失败”；它是诊断量，不是主结果或事例筛选。
+* 本底按 `pytrial/bkg_est_add` 的模型：`n_bkg = 2.42466` hit/event，`k ~ Poisson(n_bkg)`，在 568 个晶体中均匀有放回抽编号，能量取 N(5, 2²) 截断于 0。**每个拼接事例只注入一次本底**（不是每个信号粒子一次）。
+* 数据：`ep_iso` / `gamma_iso` 前 100 000 事例；每个场景 **20 000** 事例；随机种子 `20261106`。
+
+### 5.3 场景定义
+
+| 场景 | 信号 | 选择 | N | 输出 |
+|:--|:--|:--|--:|:--|
+| `2gamma` | γ + γ | 两个不同 `gamma_iso` 事例；无 `E_sig` 筛选 | 2 | `stitched_2gamma_{sig,bkg}.root` |
+| `ep2gamma` | e+ + γ + γ | 一个 `ep_iso` + 两个不同 `gamma_iso`；无 `E_sig` 筛选 | 3 | `stitched_ep2gamma_{sig,bkg}.root` |
+
+每个场景写两个文件，`Truth*` 完全相同，只有 `Edeps`/`Bkg*`/`NBkg` 不同。
+
+### 5.4 数据格式
 
 | 分支 | 类型 | 含义 |
 |:--|:--|:--|
-| `Edeps` | `vector<float>[568]` | 相加后的总能量（重建用） |
-| `NTrack` | `int` | 初级数 N |
-| `Species` | `vector<int>[N]` | 0=ep, 1=gamma, 2=mu |
+| `Edeps` | `vector<float>[568]` | 信号 + 本底总能量（重建用） |
+| `NTrack` | `int` | 信号粒子数 N |
+| `Species` | `vector<int>[N]` | 0=正电子, 1=gamma |
 | `SourceIdx` | `vector<int>[N]` | 源事例索引 |
-| `TruthCrystal` | `vector<int>` | 有贡献的晶体（稀疏） |
-| `TruthPrimary` | `vector<int>` | 该贡献属于第几个初级 |
-| `TruthEnergy` | `vector<float>` | 该初级在该晶体的能量 |
-| `TruthCentroid` | `vector<float>[3N]` | 逐初级能量加权质心 |
-| `Separation` | `float` | 两两质心距离的最小值（mm） |
-| `OverlapEnergyFraction` | `float` | 被 ≥2 个初级共享的晶体能量占比 |
+| `PrimaryEnergy` | `vector<float>[N]` | 主粒子能量（53.085 MeV） |
+| `SourceEnergy` | `vector<float>[N]` | 每个源的沉积能量 |
+| `SignalEnergy` | `float` | 信号沉积总能量 |
+| `BkgEnergyTotal` | `float` | 本底总能量 |
+| `NBkg` | `int` | 本底 hit 数 |
+| `TruthCrystal` / `TruthPrimary` / `TruthEnergy` | 稀疏 | 每个初级、每块晶体的信号贡献 |
+| `BkgCrystal` / `BkgEnergy` | 稀疏 | 本底 hit 的晶体与能量 |
 
-### 5.4 评估
+### 5.5 评估
 
-* 计数：exact-N、欠/过分裂、MAE、RMSE、bias、mean/std/max；
-* 匹配：
-  * 构造重叠矩阵 `M[i,j]`（重建团簇 i 中来自真值初级 j 的能量）；
-  * 匈牙利算法最大化总重叠；
-  * 效率 `ε_j`、纯度 `p_i`；
-  * 合并率、分裂率、匹配率；
-* 能量：每个真值簇的能量回收、总捕获、未聚类能量。
+* **计数**：总团簇数与“信号团簇数”（`e_sig ≥ 1 MeV`）分别计算 exact-N、欠/过分裂、MAE、平均团簇数；
+* **条件 exact**：所有源 `E_sig>0` 的子集上的 exact-N；仅用于诊断零沉积/泄漏的影响，不改变 all-event 主结果；
+* **匹配**：重叠矩阵 `M[i,j]`、精确指派（小矩阵穷举，等价匈牙利）、逐初级效率、簇匹配纯度、匹配率、合并率、分裂率；
+* **本底**：信号纯度、本底捕获率、假团簇/事例、领头簇本底占比；
+* **能量**：信号能量捕获、领头簇信号收束、逐初级能量响应（`E_sig ≥ 20 MeV`）。
 
-### 5.5 交付物
+### 5.6 扫描网格与交付物
 
-* `pytrial/stitching.py` 的 `stitch_with_truth` 实现；
-* `pytrial/evaluation/matching.py`、`energy.py` 实现；
-* 拼接样本、评估脚本、结果表/图；
-* 阶段报告（同 Stage 1 格式）。
+* 网格：`Eth_seed ∈ {5,6,7,8,10,13,14}`、`Eth_wave ∈ {0.02,0.05}`、`Nth ∈ {0,1}`；每个“场景 × 版本”28 点，合计 **112 次重建**。
+* 驱动：`pytrial/results/multiparticle/stage2/generate.py`、`evaluate.py`、`run_stage2.sh`。
+* 结果：`data/*.root`、`results/stage2_metrics.csv`、`results/points/*.json`、图、`README.md`。
 
-### 5.6 通过标准
+### 5.7 通过标准
 
-* 每个文件真值自洽：`Σ Edeps == Σ TruthEnergy`；
-* 匹配矩阵每行/列能量守恒；
-* 计数与匹配指标有限、在 [0,1]；
-* 给出 N=2/3/4 的基线表与图；
-* 复现命令写入报告。
+* 每个文件真值自洽：`Σ Edeps_sig == Σ TruthEnergy == SignalEnergy`，`Σ Edeps_bkg == SignalEnergy + BkgEnergyTotal`；
+* 所有 `NTrack`、`NBkg`、`Species`、`SourceIdx` 长度一致；
+* 匹配矩阵行/列能量守恒；计数/匹配/本底指标有限且在 [0,1]；
+* 给出两种场景在 signal-only 与 +background 下的 all-event 与条件 exact、参数趋势、合并/分裂与假团簇结果；
+* 复现命令写入阶段报告。
 
 ---
 
-## 6. Stage 3：方案 C — 分离度分箱（N=2）
+## 6. Stage 3：方案 C — 分离度分箱（N=2，本次完成）
 
 ### 6.1 目的
 
@@ -229,8 +260,9 @@ for 每个拼接事例 (2k):
 | 4 | 3–5 | 明显分开 |
 | 5 | >5 | 基本独立 |
 
-* 每箱 ≥2 000 事例；同种 + 混合各一组；
-* 用 Stage 2 的真值格式与匹配指标。
+* 每箱 **2 500** 事例，共 15 000；本阶段只做 **2γ**（两个不同的 `gamma_iso`），不做混合；
+* 零沉积事例的质心无定义，因此 Stage 3 样本要求每个源 `E_sig>0`（技术性要求，不是物理能量筛选；Stage 2 的 all-event 结果仍包含零沉积）；
+* 用 Stage 2 的真值格式与匹配指标；每个拼接事例一次本底，写 signal-only 与 +background 两版。
 
 ### 6.3 交付物
 
@@ -242,9 +274,18 @@ for 每个拼接事例 (2k):
 ### 6.4 通过标准
 
 * 位置表覆盖 568 晶体，晶距与邻接表一致（≈46 mm）；
-* 每箱统计量 ≥2 000；
+* 每箱统计量 ≥2 000（实际 2 500）；
 * 合并率曲线单调（距离越大合并率越低），并给出 10%/50% 合并对应的距离；
 * 复现命令写入报告。
+
+### 6.5 完成结果（2026-11-09）
+
+* 15 000 个 2γ 事例，6 箱 × 2 500；晶距 46.24 mm；源沉积能量均值 51.58/51.55 MeV；
+* 合并率：0.314 pitch 0.9992 → 0.579 pitch 0.9984 → 1.011 pitch 0.9920 → 2.582 pitch 0.8328 → 4.105 pitch 0.2268 → 10.105 pitch 0.0012；
+* **50% 合并半径 3.41 pitch ≈ 157.7 mm**；**10% 合并半径 7.43 pitch ≈ 343.6 mm**（+background 分别 3.42 pitch/158.1 mm、7.48 pitch/345.8 mm）；
+* seed 5–14、Nth 0/1 的曲线几乎完全重合（50% 半径差 ≤0.003 pitch），说明 2γ 的瓶颈是**几何重叠**而不是阈值；
+* 本底假团簇 ≤0.0008/事例，纯度 0.992，本底捕获 4.6–6.9%，曲线基本不变；
+* 报告：`pytrial/results/multiparticle/stage3/README.md`。
 
 ---
 
@@ -397,14 +438,21 @@ Stage 2 起，命令写入各阶段自己的 README / 阶段报告。
 5. **统计相关**：拼接事例可能复用源事例；主结果用分块 pool。
 6. **无时间信息**：同一晶体上的重叠簇射在能量上不可区分；这是本测试的边界，不是缺陷。
 7. **边缘效应**：质心靠近探测器边缘的事例接受度不同；必要时加 fiducial cut 或单独报告。
+8. **样本单能与零沉积（Stage 2 修正）**：`ep_iso`/`gamma_iso` 的主粒子能量均为 53.085 MeV；Stage 2 修正版**不做任何沉积能量筛选**。all-event exact 包含零沉积/严重泄漏事例（2γ 23.0%、e+2γ 30.5% 至少一个源零沉积）；条件 exact（所有源 `E_sig>0`）只作为诊断，不是事例选择。上一版 100–125 MeV 窗口把正电子平均压到 26.4 MeV，是选择效应，已废弃。
 
 ---
 
 ## 13. 当前状态
 
 * **Stage 1（A）**：✅ 已完成（2026-10-29）。2 000 个 N=2 拼接事例；**exact-2 = 0.8575**，under = 0.1260，over = 0.0165，MAE = 0.1430；能量守恒最大误差 1.53×10⁻⁵ MeV；所有检查通过。报告：`pytrial/smoke_tests/simple_evt_stitch/README.md`。
-* **Stage 2（B）**：待开始。下一次对话的内容：实现逐初级真值拼接 + 匹配/能量评估，生成 N=2/3/4 同种/混合样本，给出第一版多粒子基线。
-* **Stage 3–5**：待排期。
+* **Stage 2（B）**：✅ 已完成（修正版，2026-11-09）。两种场景 × signal-only/+background × 28 组参数 = **112 次重建**，每点 20 000 事例；**无任何沉积能量筛选**。报告：`pytrial/results/multiparticle/stage2/README.md`。
+  * **2γ**（两个不同 `gamma_iso`）：最佳 `seed=13, Nth=0, wave=0.05`，all-event exact-N（信号簇）**0.7098**，条件 exact（两个源 `E_sig>0`）**0.9213**（77.0% 事例）；假团簇 0.0001/事例，纯度 0.9920，合并 5.44%，分裂 3.26%，效率 0.8322；本底代价 −0.02 pp。
+  * **e+2γ**（一个 `ep_iso` + 两个不同 `gamma_iso`）：最佳 `seed=10, Nth=0, wave=0.05`，all-event exact-N **0.5392**，条件 exact（三个源 `E_sig>0`）**0.7741**（69.5% 事例）；假团簇 0.0032/事例，纯度 0.9917，合并 15.72%，分裂 3.54%，效率 0.8062；本底代价 −0.05 pp。
+  * 修正要点：上一版的 100–125 MeV 窗口把正电子平均压到 26.4 MeV，制造了“软正电子瓶颈”；修正后正电子平均 46.60 MeV，条件 exact 0.774，**软正电子问题不成立**。all-event 与条件 exact 的差距主要来自零沉积/泄漏（2γ 23.0%，e+2γ 30.5%）。
+  * 关键结论：本底的主要威胁是**低种子阈值下的假团簇**，不是能量污染；最佳工作点为高种子（10–14）+ Nth0。
+* **Stage 3（C）**：✅ 已完成（2026-11-09）。2γ 分离度曲线：15 000 事例（6 箱 × 2 500），晶距 46.24 mm；**50% 合并半径 3.41 pitch ≈ 157.7 mm**，**10% 半径 7.43 pitch ≈ 343.6 mm**；seed 5–14、Nth 0/1 曲线几乎重合；本底假团簇 ≤0.0008/事例，曲线基本不变。报告：`pytrial/results/multiparticle/stage3/README.md`。
+* **Stage 4（D）**：下一次对话。晶体集不相交对照（N=2）：选两个 gamma 的点亮晶体集完全不相交的事例，测量无共享晶体时的 exact-2/合并率，与 Stage 3 同分离度箱比较；判断合并主要来自共享晶体还是传播/种子拓扑。
+* **Stage 5（E）**：Poisson 多重数 + 混合种类；待排期。
 * **Stage 6（F）**：暂缓。
 
 ---

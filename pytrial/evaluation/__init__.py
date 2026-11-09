@@ -2,12 +2,13 @@
 
 The package is split by concern so the source files stay small:
 
-* :mod:`evaluation.counts`   - count-based metrics (implemented in Stage 1)
-* :mod:`evaluation.matching` - truth matching, efficiency/purity, merge/split
-  (Stage 2/3)
-* :mod:`evaluation.energy`   - per-primary energy metrics (Stage 2)
+* :mod:`evaluation.counts`     - count-based metrics
+* :mod:`evaluation.matching`   - overlap matrix, Hungarian assignment, merge/split
+* :mod:`evaluation.background` - signal purity, fake clusters, background capture
+* :mod:`evaluation.energy`     - energy capture, containment, per-primary response
+* :mod:`evaluation.io`         - stitched-sample and cluster-file readers
 """
 
-from . import counts
+from . import background, counts, energy, matching, separation
 
-__all__ = ["counts"]
+__all__ = ["background", "counts", "energy", "matching", "separation"]
