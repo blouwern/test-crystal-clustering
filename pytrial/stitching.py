@@ -130,7 +130,7 @@ def background_vectors(counts, mods, energies, n_mod=N_MOD):
     """Split flat background draws into per-event vectors and sparse lists.
 
     ``counts``/``mods``/``energies`` are the flat arrays returned by
-    ``bkg_est_add.add_background.draw_injections``.  Returns
+    ``bkg_est_add.gamma.add_background.draw_injections``.  Returns
     ``(vectors, mods_list, energies_list)`` where ``vectors[i]`` is a float32
     array of length ``n_mod`` and the lists hold the raw per-event hits.
     """

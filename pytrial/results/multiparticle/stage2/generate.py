@@ -11,7 +11,7 @@ signal energy ``E_sig = sum(Edeps)`` varies only through detector leakage.  It
 is used as the energy denominator in the metrics, not as an event-selection
 criterion.
 
-Background (same model as ``pytrial/bkg_est_add``): ``k ~ Poisson(n_bkg)``,
+Background (same model as ``pytrial/bkg_est_add/gamma``): ``k ~ Poisson(n_bkg)``,
 ``n_bkg = 2.42466`` hits per event, uniform random crystals, hit energies from
 N(5, 2^2) truncated at zero.  **One background draw per stitched event**, not
 one per signal particle.
@@ -36,7 +36,7 @@ import numpy as np
 HERE = Path(__file__).resolve().parent
 PYTRIAL = HERE.parents[2]
 REPO = HERE.parents[3]
-BKG_DIR = PYTRIAL / "bkg_est_add"
+BKG_DIR = PYTRIAL / "bkg_est_add" / "gamma"
 sys.path.insert(0, str(PYTRIAL))
 sys.path.insert(0, str(BKG_DIR))
 
@@ -229,7 +229,7 @@ def main():
             "E_sig = sum(Edeps) is the detector response and is used only in the metrics."
         ),
         "background": {
-            "model": "pytrial/bkg_est_add",
+            "model": "pytrial/bkg_est_add/gamma",
             "n_bkg_per_event": n_bkg,
             "spectrum_mean_mev": spectrum.mean_deposition_mev,
             "spectrum_sigma_mev": spectrum.sigma_mev,

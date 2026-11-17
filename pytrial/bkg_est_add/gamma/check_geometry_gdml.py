@@ -28,7 +28,7 @@ import bkg_model
 
 ROOT.gROOT.SetBatch(True)
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parents[1]
+REPO = HERE.parents[2]
 
 
 def load_gdml(raw_path: Path) -> str:

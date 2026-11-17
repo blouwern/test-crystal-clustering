@@ -27,7 +27,7 @@ from scipy.spatial import cKDTree
 HERE = Path(__file__).resolve().parent
 PYTRIAL = HERE.parents[2]
 REPO = HERE.parents[3]
-BKG_DIR = PYTRIAL / "bkg_est_add"
+BKG_DIR = PYTRIAL / "bkg_est_add" / "gamma"
 sys.path.insert(0, str(PYTRIAL))
 sys.path.insert(0, str(BKG_DIR))
 

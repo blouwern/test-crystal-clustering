@@ -1,0 +1,88 @@
+{
+  "title": "Conservative upper bound on the neutron background in the MACE ECAL",
+  "geometry": {
+    "inner_radius_mm": 260.0,
+    "outer_radius_mm": 540.0,
+    "crystal_length_mm": 280.0,
+    "crystal_length_cm": 28.0,
+    "shell_surface_cm2": 36643.536711471344,
+    "effective_area_cm2": 9160.884177867836,
+    "n_crystals": 568,
+    "n_faces_ideal": 642,
+    "geometric_coverage": 0.8847352024922118,
+    "molecular_density_cm3": 1.0453777516406281e+22,
+    "crystal_volume_cm3": 910.0857119490936,
+    "crystal_mass_kg": 4.104486560890412,
+    "total_volume_cm3": 516928.68438708514,
+    "total_mass_kg": 2331.348366585754,
+    "density_g_cm3": 4.51
+  },
+  "rate": {
+    "flux_n_cm2_s": 200.0,
+    "event_window_ns": 100.0,
+    "capture_probability": 1.0,
+    "r_incident_per_s": 1832176.8355735673,
+    "r_capture_per_s": 1620991.3436227199,
+    "n_capture_per_event": 0.162099134362272,
+    "poisson_probability": {
+      "0": 0.8503569007725402,
+      "1": 0.13784211751421319,
+      "2": 0.011172043963858265,
+      "3": 0.0006036595518662236
+    },
+    "expected_captures_per_1e6_events": 162099.134362272
+  },
+  "capture": {
+    "sigma_cap_b_per_molecule": 35.2,
+    "sigma_cap_components_b": {
+      "Cs-133": 29.0,
+      "I-127": 6.2
+    },
+    "sigma_cap_cm2": 3.52e-23,
+    "macro_cross_section_cm_inv": 0.3679729685775011,
+    "lambda_capture_cm": 2.7175909248599703,
+    "depth_pdf": "p(d) = exp(-d/lambda_c)/lambda_c,  0 <= d <= L",
+    "fraction_within_1_lambda": 0.6321205588285577,
+    "fraction_within_3_lambda": 0.950212931632136
+  },
+  "gamma": {
+    "mu_over_rho_cm2_g": 0.0353,
+    "density_g_cm3": 4.51,
+    "mu_cm_inv": 0.15920299999999998,
+    "lambda_gamma_cm": 6.28128866918337
+  },
+  "deposition": {
+    "a_cm_inv": 0.3679729685775011,
+    "b_cm_inv": 0.15920299999999998,
+    "thickness_cm": 28.0,
+    "inward_hemisphere": 0.4898161446953054,
+    "outward_hemisphere": 0.1509962066305806,
+    "f_dep": 0.640812351325886,
+    "f_dep_numeric": 0.6407788271921924,
+    "closed_form": "1/2[1 - a/(a-b) e^{-bL}(1-e^{-(a-b)L})] + 1/2[1 - a/(a+b)(1-e^{-(a+b)L})]"
+  },
+  "energy": {
+    "q_gamma_mev": 6.855805,
+    "f_dep": 0.640812351325886,
+    "energy_per_capture_mev": 4.393284522281766,
+    "n_capture_per_event": 0.162099134362272,
+    "energy_per_event_mev": 0.7121476180690419,
+    "total_gamma_energy_per_event_mev": 1.1113200558565361,
+    "escaped_energy_per_event_mev": 0.3991724377874943,
+    "hard_ceiling_per_capture_mev": 6.855805,
+    "hard_ceiling_per_event_mev": 1.1113200558565361
+  },
+  "assumptions": {
+    "spectrum": "all incident neutrons are thermal and are captured; this is an upper bound because each neutron can be captured at most once",
+    "capture_probability": "P_cap = 1 (real thermal value ~0.9)",
+    "hadronic_showers": "not modelled (excluded by decision); they are the only channel that could create fake clusters",
+    "elastic_inelastic": "not modelled; quenched recoils are at the keV level and (n,n'gamma) gives tens of keV per event, 1-2 orders below the capture channel",
+    "geometry": "GP(8,0) ideal 642 cells; 568 instrumented crystals",
+    "window": "100 ns, continuous beam (steady state)"
+  },
+  "interpretation": {
+    "n_capture": "expected number of captures per event over the whole detector, upper bound",
+    "f_dep": "fraction of the 6.86 MeV cascade deposited in the CsI array; the remaining 36% escapes through the outer surface",
+    "energy_per_event": "n_capture * Q_gamma * f_dep = n_capture * energy_per_capture"
+  }
+}

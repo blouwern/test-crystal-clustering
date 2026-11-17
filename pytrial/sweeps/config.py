@@ -37,16 +37,16 @@ Both axes are overridable so the same code reproduces every campaign:
 Background campaign (2026-11-06)
 --------------------------------
 The processed samples also exist with an injected gamma background
-(``*_bkg.root``; mean 2.4247 hits/event, each ~N(5 MeV, 2 MeV^2); see
+(``*_bkg_g.root``; mean 2.4247 hits/event, each ~N(5 MeV, 2 MeV^2); see
 ``pytrial/bkg_est_add/README.md``).  Those files add an ``NBkg`` branch and
 keep the same event order as the no-background files, so a background event
 can be decomposed crystal-by-crystal into signal and background energy.
 
 ``DATASETS`` is therefore overridable as well, e.g.
 
-    ECAL_SWEEP_DATASETS=ep_iso,gamma_iso,mu_rest,ep_iso_bkg,gamma_iso_bkg,mu_rest_bkg
+    ECAL_SWEEP_DATASETS=ep_iso,gamma_iso,mu_rest,ep_iso_bkg_g,gamma_iso_bkg_g,mu_rest_bkg_g
 
-and the helpers below map ``*_bkg`` to the matching signal-only sample.
+and the helpers below map ``*_bkg_g`` to the matching signal-only sample.
 """
 
 import os
@@ -76,17 +76,22 @@ SUMMARY_CSV = RESULTS_DIR / "sweep_summary.csv"
 DATASETS = [x.strip() for x in os.environ.get(
     "ECAL_SWEEP_DATASETS", "ep_iso,gamma_iso,mu_rest").split(",") if x.strip()]
 EXPECTED_LAMBDA = 1.0
-BKG_SUFFIX = "_bkg"
+#: Background-injected samples: ``_bkg_g`` for gamma, ``_bkg_n`` for neutrons.
+BKG_SUFFIXES = ("_bkg_g", "_bkg_n")
+BKG_SUFFIX = BKG_SUFFIXES[0]          # legacy alias
 
 
 def has_bkg(dataset):
-    """True for the gamma-background-injected samples."""
-    return dataset.endswith(BKG_SUFFIX)
+    """True for any background-injected sample (gamma or neutron)."""
+    return any(dataset.endswith(s) for s in BKG_SUFFIXES)
 
 
 def signal_dataset(dataset):
     """Signal-only sample matching a (possibly background-injected) sample."""
-    return dataset[:-len(BKG_SUFFIX)] if has_bkg(dataset) else dataset
+    for suffix in BKG_SUFFIXES:
+        if dataset.endswith(suffix):
+            return dataset[:-len(suffix)]
+    return dataset
 
 
 def _float_list(env, default):

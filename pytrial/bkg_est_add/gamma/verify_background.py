@@ -218,7 +218,7 @@ def main() -> None:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--datasets", nargs="+", default=list(add_background.DEFAULT_DATASETS))
     parser.add_argument("--data-dir", type=Path, default=add_background.default_data_dir())
-    parser.add_argument("--suffix", default="_bkg")
+    parser.add_argument("--suffix", default="_bkg_g")
     parser.add_argument("--max-events", type=int, default=0,
                         help="verify only the first N events (0 = all)")
     parser.add_argument("--json", type=Path, default=None,
