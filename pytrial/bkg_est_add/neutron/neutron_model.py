@@ -79,11 +79,20 @@ SIGMA_CAP_CS_B = 29.0                   # Cs-133
 SIGMA_CAP_I_B = 6.2                     # I-127
 SIGMA_CAP_TH_B = SIGMA_CAP_CS_B + SIGMA_CAP_I_B
 
-#: Total gamma energy released per capture (Cs 6.89, I 6.82, abundance weighted).
-Q_GAMMA_MEV = 0.5115 * 6.89 + 0.4885 * 6.82
+#: Neutron separation energies from the atomic masses (AME2020):
+#: Q = [M(A) + M(n) - M(A+1)] c^2  ->  6.8915 MeV (Cs) and 6.8250 MeV (I).
+Q_CS_MEV = 6.8915
+Q_I_MEV = 6.8250
 
-#: Mass attenuation coefficient of CsI at 6.86 MeV (NIST XCOM).
-MU_RHO_CM2_G = 0.0353
+#: Mean gamma energy per capture.  A capture happens on Cs or I in proportion
+#: to the capture cross sections (29.0 : 6.2), NOT to the mass fractions, so
+#: the weighting is sigma_Cs : sigma_I.
+Q_GAMMA_MEV = ((SIGMA_CAP_CS_B * Q_CS_MEV + SIGMA_CAP_I_B * Q_I_MEV)
+               / SIGMA_CAP_TH_B)
+
+#: Mass attenuation coefficient of CsI at 6.88 MeV: log-log interpolation of the
+#: NIST table (5 MeV 0.0362, 6 MeV 0.0367, 8 MeV 0.0384, 10 MeV 0.0403 cm^2/g).
+MU_RHO_CM2_G = 0.0375
 
 #: Physical constants.
 N_A = 6.02214076e23

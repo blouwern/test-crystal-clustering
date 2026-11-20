@@ -46,31 +46,31 @@
     "fraction_within_3_lambda": 0.950212931632136
   },
   "gamma": {
-    "mu_over_rho_cm2_g": 0.0353,
+    "mu_over_rho_cm2_g": 0.0375,
     "density_g_cm3": 4.51,
-    "mu_cm_inv": 0.15920299999999998,
-    "lambda_gamma_cm": 6.28128866918337
+    "mu_cm_inv": 0.169125,
+    "lambda_gamma_cm": 5.912786400591279
   },
   "deposition": {
     "a_cm_inv": 0.3679729685775011,
-    "b_cm_inv": 0.15920299999999998,
+    "b_cm_inv": 0.169125,
     "thickness_cm": 28.0,
-    "inward_hemisphere": 0.4898161446953054,
-    "outward_hemisphere": 0.1509962066305806,
-    "f_dep": 0.640812351325886,
-    "f_dep_numeric": 0.6407788271921924,
+    "inward_hemisphere": 0.49190901384303026,
+    "outward_hemisphere": 0.15744344438132885,
+    "f_dep": 0.649352458224359,
+    "f_dep_numeric": 0.6493189340878861,
     "closed_form": "1/2[1 - a/(a-b) e^{-bL}(1-e^{-(a-b)L})] + 1/2[1 - a/(a+b)(1-e^{-(a+b)L})]"
   },
   "energy": {
-    "q_gamma_mev": 6.855805,
-    "f_dep": 0.640812351325886,
-    "energy_per_capture_mev": 4.393284522281766,
+    "q_gamma_mev": 6.879786931818181,
+    "f_dep": 0.649352458224359,
+    "energy_per_capture_mev": 4.467406556235956,
     "n_capture_per_event": 0.162099134362272,
-    "energy_per_event_mev": 0.7121476180690419,
-    "total_gamma_energy_per_event_mev": 1.1113200558565361,
-    "escaped_energy_per_event_mev": 0.3991724377874943,
-    "hard_ceiling_per_capture_mev": 6.855805,
-    "hard_ceiling_per_event_mev": 1.1113200558565361
+    "energy_per_event_mev": 0.7241627356101871,
+    "total_gamma_energy_per_event_mev": 1.1152075062445983,
+    "escaped_energy_per_event_mev": 0.3910447706344111,
+    "hard_ceiling_per_capture_mev": 6.879786931818181,
+    "hard_ceiling_per_event_mev": 1.1152075062445983
   },
   "assumptions": {
     "spectrum": "all incident neutrons are thermal and are captured; this is an upper bound because each neutron can be captured at most once",
@@ -82,7 +82,7 @@
   },
   "interpretation": {
     "n_capture": "expected number of captures per event over the whole detector, upper bound",
-    "f_dep": "fraction of the 6.86 MeV cascade deposited in the CsI array; the remaining 36% escapes through the outer surface",
+    "f_dep": "fraction of the 6.86 MeV cascade deposited in the CsI array; the remaining 35% escapes through the outer surface",
     "energy_per_event": "n_capture * Q_gamma * f_dep = n_capture * energy_per_capture"
   }
 }
